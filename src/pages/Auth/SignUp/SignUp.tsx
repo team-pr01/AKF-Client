@@ -5,10 +5,10 @@ import {
   LoaderIcon,
   AlertCircleIcon,
   CheckCircleIcon,
-} from "../../constants";
-import TextInput from "../../components/Reusable/TextInput/TextInput";
+} from "../../../constants";
+import TextInput from "../../../components/Reusable/TextInput/TextInput";
 import { useForm } from "react-hook-form";
-import PasswordInput from "../../components/Reusable/PasswordInput/PasswordInput";
+import PasswordInput from "../../../components/Reusable/PasswordInput/PasswordInput";
 import { Link } from "react-router-dom";
 
 type TFormData = {
@@ -86,7 +86,7 @@ const SignUp = () => {
       </p>
 
       {/* Progress Bar */}
-      <div className="mb-5 w-full">
+      <div className="my-6 w-full">
         <div className="flex justify-between text-xs text-gray-400 mb-1">
           <span>Step {currentStep} of 2</span>
         </div>

@@ -1,8 +1,8 @@
 import { useForm } from "react-hook-form";
-import PasswordInput from "../../components/Reusable/PasswordInput/PasswordInput";
-import TextInput from "../../components/Reusable/TextInput/TextInput";
+import PasswordInput from "../../../components/Reusable/PasswordInput/PasswordInput";
+import TextInput from "../../../components/Reusable/TextInput/TextInput";
 import { useState } from "react";
-import { CheckCircleIcon, LoaderIcon } from "../../constants";
+import { CheckCircleIcon, LoaderIcon } from "../../../constants";
 import { Link } from "react-router-dom";
 
 type TFormData = {
@@ -30,7 +30,7 @@ const Login = () => {
       <p className="text-center text-sm text-gray-400 mb-5">
         Join our community to explore Vedic wisdom.
       </p>
-      <form onSubmit={handleSubmit(handleLogin)} className="space-y-3 w-full">
+      <form onSubmit={handleSubmit(handleLogin)} className="space-y-3 w-full mt-6">
         <TextInput
           label="Email"
           type="email"
