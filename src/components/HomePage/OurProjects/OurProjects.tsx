@@ -1,6 +1,5 @@
 
 import { HeartIcon } from '../../../constants';
-import { useTheme } from '../../../contexts/ThemeContext';
 
 const projectItems = [
   {
@@ -33,7 +32,6 @@ const projectItems = [
 ];
 
 const OurProjects= () => {
-  const { theme } = useTheme();
   return (
     <section className="px-4 py-2 bg-light-primary dark:bg-primary"> {/* Reduced py further */}
       <h2 className="text-xl font-semibold text-light-text-primary dark:text-dark-text-primary mb-3 text-gradient bg-gradient-to-r from-brand-blue to-emerald-500">
