@@ -6,7 +6,7 @@ const Books = () => {
 
   return (
     <section className="px-4 py-2 bg-light-primary dark:bg-primary">
-      <h2 className="text-xl font-semibold text-light-text-primary dark:text-dark-text-primary mb-3 text-gradient bg-gradient-to-r from-brand-orange to-brand-yellow">
+      <h2 className="text-xl font-semibold dark:text-dark-text-primary mb-3 text-gradient bg-gradient-to-r from-brand-orange to-brand-yellow bg-clip-text text-transparent">
         Sacred Texts
       </h2>
       <div className="flex space-x-3 overflow-x-auto scrollbar-hide pb-3">

@@ -13,9 +13,9 @@ const Home = () => {
       <div className="px-4 py-3 bg-light-primary dark:bg-primary">
         <SearchBar />
       </div>
-      <PageIconLinks/>
-      <Books/>
-      <OurProjects/>
+      <PageIconLinks />
+      <Books />
+      <OurProjects />
     </div>
   );
 };
