@@ -8,6 +8,7 @@ import Login from "../pages/Auth/Login/Login";
 import ForgotPassword from "../pages/Auth/ForgotPassword/ForgotPassword";
 import ResetPassword from "../pages/Auth/ResetPassword/ResetPassword";
 import Yoga from "../pages/Yoga/Yoga";
+import Vastu from "../pages/Vastu/Vastu";
 
 export const router = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ export const router = createBrowserRouter([
       {
         path: "/yoga",
         element: <Yoga />,
+      },
+      {
+        path: "/vastu",
+        element: <Vastu/>,
       },
     ],
   },
