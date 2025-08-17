@@ -9,6 +9,7 @@ import ForgotPassword from "../pages/Auth/ForgotPassword/ForgotPassword";
 import ResetPassword from "../pages/Auth/ResetPassword/ResetPassword";
 import Yoga from "../pages/Yoga/Yoga";
 import Vastu from "../pages/Vastu/Vastu";
+import Consultancy from "../pages/Consultancy/Consultancy";
 
 export const router = createBrowserRouter([
   {
@@ -26,7 +27,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "/vastu",
-        element: <Vastu/>,
+        element: <Vastu />,
+      },
+      {
+        path: "/consultancy",
+        element: <Consultancy />,
       },
     ],
   },
@@ -53,5 +58,4 @@ export const router = createBrowserRouter([
       },
     ],
   },
-
 ]);
