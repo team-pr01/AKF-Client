@@ -10,6 +10,7 @@ import ResetPassword from "../pages/Auth/ResetPassword/ResetPassword";
 import Yoga from "../pages/Yoga/Yoga";
 import Vastu from "../pages/Vastu/Vastu";
 import Consultancy from "../pages/Consultancy/Consultancy";
+import Temple from "../pages/Temple/Temple";
 
 export const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ export const router = createBrowserRouter([
       {
         path: "/yoga",
         element: <Yoga />,
+      },
+      {
+        path: "/temple",
+        element: <Temple />,
       },
       {
         path: "/vastu",
