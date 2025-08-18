@@ -13,6 +13,7 @@ import Consultancy from "../pages/Consultancy/Consultancy";
 import Temple from "../pages/Temple/Temple";
 import Food from "../pages/Food/Food";
 import Jyotish from "../pages/Jyotish/Jyotish";
+import News from "../pages/News/News";
 
 export const router = createBrowserRouter([
   {
@@ -47,6 +48,10 @@ export const router = createBrowserRouter([
       {
         path: "/consultancy",
         element: <Consultancy />,
+      },
+      {
+        path: "/news",
+        element: <News/>,
       },
     ],
   },
