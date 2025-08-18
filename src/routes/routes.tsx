@@ -14,6 +14,7 @@ import Temple from "../pages/Temple/Temple";
 import Food from "../pages/Food/Food";
 import Jyotish from "../pages/Jyotish/Jyotish";
 import News from "../pages/News/News";
+import Learn from "../pages/Learn/Learn";
 
 export const router = createBrowserRouter([
   {
@@ -52,6 +53,10 @@ export const router = createBrowserRouter([
       {
         path: "/news",
         element: <News/>,
+      },
+      {
+        path: "/learn",
+        element: <Learn/>,
       },
     ],
   },
