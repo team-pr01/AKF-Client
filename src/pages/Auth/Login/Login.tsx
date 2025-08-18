@@ -3,7 +3,12 @@ import PasswordInput from "../../../components/Reusable/PasswordInput/PasswordIn
 import TextInput from "../../../components/Reusable/TextInput/TextInput";
 import { useState } from "react";
 import { CheckCircleIcon, LoaderIcon } from "../../../constants";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useLoginMutation } from "../../../redux/Features/Auth/authApi";
+import { useDispatch } from "react-redux";
+import Cookies from "js-cookie";
+import { setUser } from "../../../redux/Features/Auth/authSlice";
+import { toast } from "sonner";
 
 type TFormData = {
   email: string;
@@ -11,16 +16,50 @@ type TFormData = {
 };
 
 const Login = () => {
+  const [login, { isLoading }] = useLoginMutation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<TFormData>();
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
-  const isLoading = false;
 
   const handleLogin = async (data: TFormData) => {
-    console.log(data);
+    try {
+      const payload = {
+        email: data.email,
+        password: data.password,
+      };
+      const response = await login(payload).unwrap();
+      const user = response?.user;
+      const accessToken = response.token;
+      const userRole = response?.user?.role;
+      if (accessToken) {
+        Cookies.set("accessToken", accessToken, {
+          expires: 7,
+          secure:
+            typeof window !== "undefined" &&
+            window.location.protocol === "https:",
+          sameSite: "strict",
+        });
+        Cookies.set("role", userRole, {
+          expires: 7,
+          secure: window.location.protocol === "https:",
+          sameSite: "strict",
+        });
+      }
+
+      if (response?.message) {
+        dispatch(setUser({ user, token: accessToken }));
+        navigate("/");
+      }
+    } catch (error) {
+      const err = error as { data?: { error?: string } };
+      toast.error(err?.data?.error || "Something went wrong");
+      console.log(error);
+    }
   };
   return (
     <div className="w-full max-w-md min-h-screen flex flex-col justify-center items-center px-4 py-3">
