@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useTheme } from "../../../contexts/ThemeContext";
 
-const TabButton = ({tabId, activeTab, setActiveTab, label}) => {
+const TabButton = ({tabId, activeTab, setActiveTab, label} : any) => {
     const { theme } = useTheme();
     return (
         <button

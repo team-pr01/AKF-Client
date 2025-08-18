@@ -3,6 +3,8 @@ import PageHeader from "../../components/Reusable/PageHeader/PageHeader";
 import { useTheme } from "../../contexts/ThemeContext";
 import TabButton from "../../components/LearnPage/TabButton/TabButton";
 import Courses from "../../components/LearnPage/Courses/Courses";
+import Videos from "../../components/LearnPage/Videos/Videos";
+import AIChat from "../../components/LearnPage/AIChat/AIChat";
 
 
 const Learn = () => {
@@ -24,6 +26,12 @@ const Learn = () => {
       <div className="p-4">
         {
           activeTab === "courses" && <Courses/>
+        }
+        {
+          activeTab === "videos" && <Videos/>
+        }
+        {
+          activeTab === "ai" && <AIChat/>
         }
       </div>
 
