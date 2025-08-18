@@ -11,6 +11,7 @@ import Yoga from "../pages/Yoga/Yoga";
 import Vastu from "../pages/Vastu/Vastu";
 import Consultancy from "../pages/Consultancy/Consultancy";
 import Temple from "../pages/Temple/Temple";
+import Food from "../pages/Food/Food";
 
 export const router = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ export const router = createBrowserRouter([
       {
         path: "/temple",
         element: <Temple />,
+      },
+      {
+        path: "/food",
+        element: <Food />,
       },
       {
         path: "/vastu",
