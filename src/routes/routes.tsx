@@ -12,6 +12,7 @@ import Vastu from "../pages/Vastu/Vastu";
 import Consultancy from "../pages/Consultancy/Consultancy";
 import Temple from "../pages/Temple/Temple";
 import Food from "../pages/Food/Food";
+import Jyotish from "../pages/Jyotish/Jyotish";
 
 export const router = createBrowserRouter([
   {
@@ -38,6 +39,10 @@ export const router = createBrowserRouter([
       {
         path: "/vastu",
         element: <Vastu />,
+      },
+      {
+        path: "/jyotish",
+        element: <Jyotish />,
       },
       {
         path: "/consultancy",
