@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import PasswordInput from "../../../components/Reusable/PasswordInput/PasswordInput";
 import TextInput from "../../../components/Reusable/TextInput/TextInput";
 import { useState } from "react";
-import { CheckCircleIcon, LoaderIcon } from "../../../constants";
+import { AlertCircleIcon, CheckCircleIcon, LoaderIcon } from "../../../constants";
 import { Link, useNavigate } from "react-router-dom";
 import { useLoginMutation } from "../../../redux/Features/Auth/authApi";
 import { useDispatch } from "react-redux";
@@ -25,9 +25,11 @@ const Login = () => {
     formState: { errors },
   } = useForm<TFormData>();
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
+  const [error, setError] = useState(""); // Added error state
 
   const handleLogin = async (data: TFormData) => {
     try {
+      setError(""); // Clear previous errors
       const payload = {
         email: data.email,
         password: data.password,
@@ -36,12 +38,11 @@ const Login = () => {
       const user = response?.user;
       const accessToken = response.token;
       const userRole = response?.user?.role;
+      
       if (accessToken) {
         Cookies.set("accessToken", accessToken, {
           expires: 7,
-          secure:
-            typeof window !== "undefined" &&
-            window.location.protocol === "https:",
+          secure: window.location.protocol === "https:",
           sameSite: "strict",
         });
         Cookies.set("role", userRole, {
@@ -57,10 +58,13 @@ const Login = () => {
       }
     } catch (error) {
       const err = error as { data?: { error?: string } };
-      toast.error(err?.data?.error || "Something went wrong");
+      const errorMessage = err?.data?.error || "Something went wrong";
+      setError(errorMessage); // Set error state
+      toast.error(errorMessage);
       console.log(error);
     }
   };
+
   return (
     <div className="w-full max-w-md min-h-screen flex flex-col justify-center items-center px-4 py-3">
       <h2 className="text-2xl font-bold text-center text-brand-orange mb-1">
@@ -69,12 +73,26 @@ const Login = () => {
       <p className="text-center text-sm text-gray-400 mb-5">
         Join our community to explore Vedic wisdom.
       </p>
+
+      {error && (
+        <div className="bg-red-500/10 border border-red-500/50 text-red-600 px-3 py-2.5 rounded-lg text-xs flex items-center gap-2 mb-4 w-full">
+          <AlertCircleIcon className="w-4 h-4" />
+          <span>{error}</span>
+        </div>
+      )}
+
       <form onSubmit={handleSubmit(handleLogin)} className="space-y-3 w-full mt-6">
         <TextInput
           label="Email"
           type="email"
           placeholder="Enter your email"
-          {...register("email", { required: "Email is required" })}
+          {...register("email", { 
+            required: "Email is required",
+            pattern: {
+              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+              message: "Invalid email address"
+            }
+          })}
           error={errors.email}
         />
         <PasswordInput
@@ -102,6 +120,7 @@ const Login = () => {
         <button
           type="submit"
           className="w-full flex items-center justify-center gap-2 bg-brand-orange text-white hover:bg-opacity-90 p-3 rounded-lg shadow-md transition-colors duration-150 ease-in-out disabled:opacity-70"
+          disabled={isLoading}
         >
           {isLoading ? (
             <LoaderIcon className="w-5 h-5 animate-spin" />

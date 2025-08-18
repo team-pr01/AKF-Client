@@ -31,7 +31,7 @@ export const router = createBrowserRouter([
         element: <Yoga />,
       },
       {
-        path: "/temple",
+        path: "/temples",
         element: <Temple />,
       },
       {

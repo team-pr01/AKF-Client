@@ -137,7 +137,7 @@ const SignUp = () => {
       </div>
 
       {error && (
-        <div className="bg-red-500/10 border border-red-500/50 text-red-300 px-3 py-2.5 rounded-lg text-xs flex items-center gap-2 mb-4">
+        <div className="bg-red-500/10 border border-red-500/50 text-red-600 px-3 py-2.5 rounded-lg text-xs flex items-center gap-2 mb-4">
           <AlertCircleIcon className="w-4 h-4" />
           <span>{error}</span>
         </div>
@@ -147,7 +147,7 @@ const SignUp = () => {
         {currentStep === 1 && (
           <>
             <div className="space-y-1">
-              <label className="block text-sm font-medium text-gray-300">
+              <label className="block text-sm font-medium text-gray-800 dark:text-gray-300">
                 Profile Picture (Optional)
               </label>
 
