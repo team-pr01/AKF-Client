@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import {
   ArrowLeftIcon,
@@ -9,7 +10,9 @@ import {
 import TextInput from "../../../components/Reusable/TextInput/TextInput";
 import { useForm } from "react-hook-form";
 import PasswordInput from "../../../components/Reusable/PasswordInput/PasswordInput";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useSignupMutation } from "../../../redux/Features/Auth/authApi";
+import { toast } from "sonner";
 
 type TFormData = {
   name: string;
@@ -21,11 +24,14 @@ type TFormData = {
   state: string;
   city: string;
   area?: string;
+  file?: any;
 };
 
 type SignupStep = 1 | 2;
 
 const SignUp = () => {
+  const navigate = useNavigate();
+  const [signup, { isLoading }] = useSignupMutation();
   const {
     register,
     handleSubmit,
@@ -35,17 +41,49 @@ const SignUp = () => {
   } = useForm<TFormData>({ mode: "onChange" });
 
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
-
-  const isLoading = false;
   const [error, setError] = useState("");
   const [currentStep, setCurrentStep] = useState<SignupStep>(1);
 
   const progressPercentage = ((currentStep - 1) / 1) * 100; // 2 steps only
 
   const handleSignup = async (data: TFormData) => {
-    console.log(data);
-    reset();
-    setError("Hi");
+    try {
+      setError("");
+
+      // Create FormData object
+      const formData = new FormData();
+
+      // Append all form fields
+      formData.append("name", data.name);
+      formData.append("email", data.email);
+      formData.append("phoneNumber", data.phoneNumber);
+      formData.append("password", data.password);
+      formData.append("confirmPassword", data.confirmPassword);
+      formData.append("country", data.country);
+      formData.append("state", data.state);
+      formData.append("city", data.city);
+      if (data.area) formData.append("area", data.area);
+
+      // Append profile picture if exists
+      if (data.file && data.file.length > 0) {
+        formData.append("file", data.file[0]);
+      }
+
+      // Call the signup mutation
+      const response = await signup(formData).unwrap();
+      if (response?.success) {
+        toast.success("Signup success. Please login.");
+        navigate("/auth/login");
+      }
+
+      // Handle successful signup
+      console.log("Signup successful:", response);
+      reset();
+    } catch (err: any) {
+      // Handle error
+      setError(err.data?.message || "Signup failed. Please try again.");
+      console.error("Signup error:", err);
+    }
   };
 
   const handleNext = () => {
@@ -108,6 +146,43 @@ const SignUp = () => {
       <form onSubmit={handleSubmit(handleSignup)} className="space-y-3 w-full">
         {currentStep === 1 && (
           <>
+            <div className="space-y-1">
+              <label className="block text-sm font-medium text-gray-300">
+                Profile Picture (Optional)
+              </label>
+
+              {/* Hidden file input */}
+              <input
+                type="file"
+                id="file" // Added ID
+                accept="image/*"
+                className="hidden"
+                {...register("file")}
+              />
+
+              {/* Custom button that triggers the file input */}
+              <label
+                htmlFor="file" // Matches the input's ID
+                className="block w-full p-2 border border-dashed border-gray-400 rounded-lg text-gray-400 hover:border-brand-orange hover:text-brand-orange transition-colors cursor-pointer"
+              >
+                {watch("file")?.length > 0
+                  ? watch("file")[0].name
+                  : "Click to upload image"}
+              </label>
+
+              {/* Preview (optional) */}
+              {watch("file")?.length > 0 && (
+                <div className="mt-2">
+                  <img
+                    src={URL.createObjectURL(watch("file")[0])}
+                    alt="Preview"
+                    className="h-20 w-20 object-cover rounded-full"
+                  />
+                </div>
+              )}
+
+              <p className="text-xs text-gray-500">JPG, PNG (Max 2MB)</p>
+            </div>
             <TextInput
               label="Name"
               placeholder="Enter your name"
