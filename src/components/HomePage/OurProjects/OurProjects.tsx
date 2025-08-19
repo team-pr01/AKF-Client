@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HeartIcon } from "../../../constants";
 import { useTheme } from "../../../contexts/ThemeContext";
 import { useGetAllDonationProgramsQuery } from "../../../redux/Features/DonationPrograms/donationProgramApi";
@@ -28,7 +29,7 @@ const OurProjects = () => {
         ) : isProgramLoading ? (
           <Loader />
         ) : (
-          programData?.data?.map((item, index) => (
+          programData?.data?.map((item:any, index:number) => (
             <div
               key={item._id}
               className="flex-shrink-0 w-64 sm:w-72 group cursor-pointer transform hover:scale-105 transition-transform duration-300 ease-in-out"

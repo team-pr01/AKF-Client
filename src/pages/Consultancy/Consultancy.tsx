@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import PageHeader from "../../components/Reusable/PageHeader/PageHeader";
-import {
-  SearchLucideIcon,
-} from "../../constants";
+import { SearchLucideIcon } from "../../constants";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useGetAllCategoriesQuery } from "../../redux/Features/Categories/ReelCategory/categoriesApi";
 import Experts from "../../components/Reusable/Experts/Experts";
@@ -13,7 +11,7 @@ import { useGetAllConsultancyServicesQuery } from "../../redux/Features/Consulta
 const Consultancy = () => {
   const { theme } = useTheme();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState("");
   const { data, isFetching, isLoading } = useGetAllConsultancyServicesQuery({
     category: selectedCategory,
     keyword: searchQuery,
@@ -21,7 +19,7 @@ const Consultancy = () => {
   const { data: categoryData } = useGetAllCategoriesQuery({});
 
   const filteredCategory = categoryData?.data?.filter(
-    (category: any) => category.areaName === 'consultancyService'
+    (category: any) => category.areaName === "consultancyService"
   );
 
   const allCategories = filteredCategory?.map(
@@ -58,20 +56,20 @@ const Consultancy = () => {
 
         <div className="flex gap-2 overflow-x-auto scrollbar-hide -mx-4 px-4">
           <button
-              onClick={() => setSelectedCategory('')}
-              className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full whitespace-nowrap text-xs sm:text-sm transition-all duration-200 ease-in-out shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-opacity-50 ${
-                selectedCategory === ''
-                  ? "bg-brand-orange text-white font-semibold"
-                  : `${
-                      theme === "light"
-                        ? "bg-light-surface-alt text-light-text-secondary hover:bg-gray-200"
-                        : "bg-dark-surface-alt text-dark-text-secondary hover:bg-gray-700 hover:text-dark-text-primary"
-                    }`
-              }`}
-            >
-              All
-            </button>
-          {allCategories?.map((category:any) => (
+            onClick={() => setSelectedCategory("")}
+            className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full whitespace-nowrap text-xs sm:text-sm transition-all duration-200 ease-in-out shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-opacity-50 ${
+              selectedCategory === ""
+                ? "bg-brand-orange text-white font-semibold"
+                : `${
+                    theme === "light"
+                      ? "bg-light-surface-alt text-light-text-secondary hover:bg-gray-200"
+                      : "bg-dark-surface-alt text-dark-text-secondary hover:bg-gray-700 hover:text-dark-text-primary"
+                  }`
+            }`}
+          >
+            All
+          </button>
+          {allCategories?.map((category: any) => (
             <button
               key={category}
               onClick={() => setSelectedCategory(category)}
@@ -93,14 +91,14 @@ const Consultancy = () => {
 
       <main className="">
         {isLoading ? (
-            <Loader />
-          ) : (
-            <Experts
-              data={data?.data}
-              title={'Yoga'}
-              isLoading={isLoading || isFetching}
-            />
-          )}
+          <Loader />
+        ) : (
+          <Experts
+            data={data?.data}
+            title={"Yoga"}
+            isLoading={isLoading || isFetching}
+          />
+        )}
       </main>
 
       {/* {showPaymentModal && selectedDoctor && (
