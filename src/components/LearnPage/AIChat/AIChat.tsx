@@ -1,8 +1,12 @@
+import { Link } from "react-router-dom";
 import { BrainIcon, CheckCircleIcon, MessageSquareIcon } from "../../../constants";
 import { useTheme } from "../../../contexts/ThemeContext";
 
 const AIChat = () => {
   const { theme } = useTheme();
+  
+
+
   return (
     <div className="space-y-6">
       <div
@@ -31,13 +35,13 @@ const AIChat = () => {
           Get personalized help with your Vedic studies. Ask questions, get
           explanations, and deepen your understanding.
         </p>
-        <button
-        //   onClick={onNavigateToAIAgent}
+        <Link
+        to={"/ai-chat"}
           className="bg-gradient-to-r from-brand-blue to-teal-500 hover:from-teal-500 hover:to-brand-blue bg-200% animate-background-pan-fast transition-all duration-300 text-white rounded-lg px-6 py-3 flex items-center justify-center gap-2 mx-auto font-medium shadow-md hover:shadow-lg hover:shadow-brand-blue/40"
         >
           <BrainIcon className="w-5 h-5" />
           <span>Start Conversation</span>
-        </button>
+        </Link>
       </div>
       <div
         className={`rounded-lg p-6 shadow-lg ${

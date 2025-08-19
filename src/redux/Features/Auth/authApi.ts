@@ -49,6 +49,16 @@ const authApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["users"],
     }),
+
+    aiChat: builder.mutation({
+      query: (message) => ({
+        url: `/ai/chat`,
+        method: "POST",
+        body: message,
+        credentials: "include",
+      }),
+      invalidatesTags: ["users"],
+    }),
   }),
 });
 
@@ -58,4 +68,5 @@ export const {
   useForgotPasswordMutation,
   useResetPasswordMutation,
   useChangeUserRoleMutation,
+  useAiChatMutation,
 } = authApi;
