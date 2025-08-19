@@ -1,27 +1,48 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import PageHeader from "../../components/Reusable/PageHeader/PageHeader";
 import { useTheme } from "../../contexts/ThemeContext";
 import {
-    ArrowRightIcon,
+  ArrowRightIcon,
   BathIcon,
   BedIcon,
-  CompassIcon,
   DoorOpenIcon,
   KitchenIcon,
   Plant2Icon,
-  PlayIcon,
   SearchLucideIcon,
-  StarIcon,
   TempleIcon,
 } from "../../constants";
+import { useGetAllVastuQuery } from "../../redux/Features/Vastu/vastuApi";
+import { useGetAlConsultancyServicesQuery } from "../../redux/Features/ConsultancyService/consultancyServiceApi";
+import { getEmbedUrl } from "../../utils/getEmbedUrl";
+import Loader from "../../components/Shared/Loader/Loader";
+import Experts from "../../components/Reusable/Experts/Experts";
+
+
+export type TVastu = {
+  _id: string;
+  title: string;
+  category: string;
+  videoUrl: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+};
 
 const Vastu = () => {
   const { theme } = useTheme();
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const { data: vastu, isLoading: isVastuLoading, isFetching } = useGetAllVastuQuery({
+    keyword: searchQuery,
+    category: selectedCategory,
+  });
+  const { data, isLoading } = useGetAlConsultancyServicesQuery({});
+  const filteredExperts =
+    data?.data?.filter((expert: any) => expert.category === "Vastu Expert") ||
+    [];
 
   const vastuCategories = [
-    { id: "all", name: "All", icon: <CompassIcon /> },
+    { id: "", name: "All", icon: <DoorOpenIcon /> },
     { id: "entrance", name: "Entrance", icon: <DoorOpenIcon /> },
     { id: "bedroom", name: "Bedroom", icon: <BedIcon /> },
     { id: "kitchen", name: "Kitchen", icon: <KitchenIcon /> },
@@ -31,110 +52,62 @@ const Vastu = () => {
   ];
 
   const initialVastuTips = [
-  {
-    title: 'Main Entrance',
-    icon: <DoorOpenIcon />,
-    category: 'entrance',
-    tips: [
-      'North-East entrance is considered most auspicious for overall prosperity.',
-      'Avoid obstructions like poles or large trees directly in front of the main door.',
-      'The entrance door should always open inward, clockwise.',
-      'Keep the entrance area well-lit and clean.'
-    ]
-  },
-  {
-    title: 'Bedroom',
-    icon: <BedIcon />,
-    category: 'bedroom',
-    tips: [
-      'Master bedroom should ideally be in the South-West direction.',
-      'Sleep with your head pointing South or East for peaceful sleep.',
-      'Avoid placing mirrors directly opposite the bed.',
-      'Use calming colors for bedroom walls.'
-    ]
-  },
-  {
-    title: 'Kitchen',
-    icon: <KitchenIcon />,
-    category: 'kitchen',
-    tips: [
-      'The South-East corner is ideal for the kitchen (Agni corner).',
-      'Cooking stove should be placed such that the cook faces East.',
-      'Water source (sink, tap) should be in the North-East of the kitchen.',
-      'Avoid placing the stove and sink directly opposite each other.'
-    ]
-  },
-  {
-    title: 'Bathroom & Toilet',
-    icon: <BathIcon />,
-    category: 'bathroom',
-    tips: [
-      'North-West is the preferred direction for bathrooms and toilets.',
-      'Toilet seat should ideally face South or North.',
-      'Ensure good ventilation and keep the bathroom door closed when not in use.',
-      'Avoid constructing toilets in the North-East or South-West corners.'
-    ]
-  },
-  {
-    title: 'Temple Room (Pooja Room)',
-    icon: <TempleIcon />,
-    category: 'temple',
-    tips: [
-      'The North-East (Ishan Kona) is the most sacred direction for a pooja room.',
-      'Idols should face West or East.',
-      'Keep the pooja room clean, clutter-free, and well-lit.',
-      'Avoid placing the pooja room under a staircase or next to a bathroom.'
-    ]
-  }
-];
-
-
-  const initialVastuExperts = [
-  {
-    id: 1,
-    name: 'Dr. Acharya Vinod Shastri',
-    speciality: 'Vastu & Vedic Astrology',
-    experience: '20 years',
-    rating: 4.9,
-    price: '₹2000',
-    image: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=800&auto=format&fit=crop&q=60',
-    nextAvailable: 'Available Now'
-  },
-  {
-    id: 2,
-    name: 'Smt. Radhika Sharma',
-    speciality: 'Residential & Commercial Vastu',
-    experience: '15 years',
-    rating: 4.8,
-    price: '₹1500',
-    image: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=800&auto=format&fit=crop&q=60',
-    nextAvailable: 'Tomorrow, 10 AM'
-  }
-];
-
-  const vastuVideosData = [
-  {
-    id: 1,
-    title: 'Introduction to Vastu Shastra Principles',
-    duration: '15:30',
-    thumbnail: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop&q=60',
-    videoUrl: 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4',
-    views: '1.2M'
-  },
-  {
-    id: 2,
-    title: 'Vastu Guidelines for a Prosperous Home Office',
-    duration: '12:45',
-    thumbnail: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&auto=format&fit=crop&q=60',
-    videoUrl: 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4',
-    views: '850K'
-  }
-];
-
-
-
-  const [filteredTips, setFilteredTips] = useState(initialVastuTips);
-  const [filteredExperts, setFilteredExperts] = useState(initialVastuExperts);
+    {
+      title: "Main Entrance",
+      icon: <DoorOpenIcon />,
+      category: "entrance",
+      tips: [
+        "North-East entrance is considered most auspicious for overall prosperity.",
+        "Avoid obstructions like poles or large trees directly in front of the main door.",
+        "The entrance door should always open inward, clockwise.",
+        "Keep the entrance area well-lit and clean.",
+      ],
+    },
+    {
+      title: "Bedroom",
+      icon: <BedIcon />,
+      category: "bedroom",
+      tips: [
+        "Master bedroom should ideally be in the South-West direction.",
+        "Sleep with your head pointing South or East for peaceful sleep.",
+        "Avoid placing mirrors directly opposite the bed.",
+        "Use calming colors for bedroom walls.",
+      ],
+    },
+    {
+      title: "Kitchen",
+      icon: <KitchenIcon />,
+      category: "kitchen",
+      tips: [
+        "The South-East corner is ideal for the kitchen (Agni corner).",
+        "Cooking stove should be placed such that the cook faces East.",
+        "Water source (sink, tap) should be in the North-East of the kitchen.",
+        "Avoid placing the stove and sink directly opposite each other.",
+      ],
+    },
+    {
+      title: "Bathroom & Toilet",
+      icon: <BathIcon />,
+      category: "bathroom",
+      tips: [
+        "North-West is the preferred direction for bathrooms and toilets.",
+        "Toilet seat should ideally face South or North.",
+        "Ensure good ventilation and keep the bathroom door closed when not in use.",
+        "Avoid constructing toilets in the North-East or South-West corners.",
+      ],
+    },
+    {
+      title: "Temple Room (Pooja Room)",
+      icon: <TempleIcon />,
+      category: "temple",
+      tips: [
+        "The North-East (Ishan Kona) is the most sacred direction for a pooja room.",
+        "Idols should face West or East.",
+        "Keep the pooja room clean, clutter-free, and well-lit.",
+        "Avoid placing the pooja room under a staircase or next to a bathroom.",
+      ],
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-light-primary dark:bg-primary text-light-text-primary dark:text-dark-text-primary font-sans pb-20">
@@ -204,27 +177,38 @@ const Vastu = () => {
           >
             Vastu Videos
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {vastuVideosData.map((video) => (
+          {
+            isVastuLoading || isFetching ?
+            <Loader/>
+            :
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {
+            vastu?.data?.length < 1 ?
+            <p
+              className={`text-center py-6 text-sm ${
+                theme === "light"
+                  ? "text-light-text-tertiary"
+                  : "text-dark-text-tertiary"
+              }`}
+            >
+              No Vastu tips found
+            </p>
+            :
+            vastu?.data?.map((vastu:TVastu) => (
               <div
-                key={video.id}
+                key={vastu._id}
                 className={`rounded-lg overflow-hidden shadow-lg ${
                   theme === "light" ? "bg-light-surface" : "bg-dark-card"
                 }`}
               >
-                <div className="relative">
-                  <video
-                    src={video.videoUrl}
-                    poster={video.thumbnail}
-                    className="w-full h-40 object-cover"
-                    preload="metadata"
-                    playsInline
+                <div className="relative w-full h-48">
+                  <iframe
+                    src={getEmbedUrl(vastu.videoUrl) as string}
+                    className="absolute inset-0 w-full h-full"
+                    frameBorder="0"
+                    allow="autoplay; picture-in-picture"
+                    allowFullScreen
                   />
-                  <button
-                    className="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/50 transition-opacity"
-                  >
-                      <PlayIcon className="w-10 h-10 text-white/80" />
-                  </button>
                 </div>
                 <div className="p-3">
                   <h3
@@ -233,26 +217,15 @@ const Vastu = () => {
                         ? "text-light-text-primary"
                         : "text-dark-text-primary"
                     }`}
-                    title={video.title}
+                    title={vastu.title}
                   >
-                    {video.title}
+                    {vastu.title}
                   </h3>
-                  <div
-                    className={`flex justify-between items-center text-xs ${
-                      theme === "light"
-                        ? "text-light-text-secondary"
-                        : "text-dark-text-secondary"
-                    }`}
-                  >
-                    <span>{video.duration}</span>
-                    <span>
-                      {video.views} views
-                    </span>
-                  </div>
                 </div>
               </div>
             ))}
           </div>
+          }
         </section>
 
         <section>
@@ -265,9 +238,9 @@ const Vastu = () => {
           >
             Popular Vastu Tips
           </h2>
-          {filteredTips.length > 0 ? (
+          {initialVastuTips.length > 0 ? (
             <div className="space-y-3">
-              {filteredTips.map((tip, index) => (
+              {initialVastuTips.map((tip, index) => (
                 <details
                   key={index}
                   className={`rounded-lg shadow-md overflow-hidden ${
@@ -322,106 +295,19 @@ const Vastu = () => {
           )}
         </section>
 
-        <section>
-          <h2
-            className={`text-lg font-semibold mb-3 ${
-              theme === "light"
-                ? "text-light-text-primary"
-                : "text-dark-text-primary"
-            }`}
-          >
-            Vastu Experts
-          </h2>
-          {filteredExperts.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {filteredExperts.map((expert) => (
-                <div
-                  key={expert.id}
-                  className={`rounded-lg p-3 shadow-lg flex gap-3 ${
-                    theme === "light" ? "bg-light-surface" : "bg-dark-card"
-                  }`}
-                >
-                  <img
-                    src={expert.image}
-                    alt={expert.name}
-                    className="w-20 h-20 rounded-md object-cover"
-                  />
-                  <div className="flex-1">
-                    <h3
-                      className={`font-semibold text-sm ${
-                        theme === "light"
-                          ? "text-light-text-primary"
-                          : "text-dark-text-primary"
-                      }`}
-                    >
-                      {expert.name}
-                    </h3>
-                    <p className="text-xs text-brand-orange mb-0.5">
-                      {expert.speciality}
-                    </p>
-                    <p
-                      className={`text-xs ${
-                        theme === "light"
-                          ? "text-light-text-secondary"
-                          : "text-dark-text-secondary"
-                      }`}
-                    >
-                      {expert.experience}
-                    </p>
-                    <div className="flex items-center gap-1 text-xs mt-1">
-                      <StarIcon className="w-3 h-3 text-yellow-400" />{" "}
-                      <span
-                        className={`${
-                          theme === "light"
-                            ? "text-light-text-secondary"
-                            : "text-dark-text-secondary"
-                        }`}
-                      >
-                        {expert.rating}
-                      </span>
-                      <span
-                        className={`mx-1 ${
-                          theme === "light" ? "text-gray-300" : "text-gray-600"
-                        }`}
-                      >
-                        |
-                      </span>
-                      <span
-                        className={`${
-                          theme === "light"
-                            ? "text-light-text-primary"
-                            : "text-dark-text-primary"
-                        }`}
-                      >
-                        {expert.price}
-                      </span>
-                    </div>
-                    <button
-                      className={`mt-2 text-xs px-3 py-1 rounded-md text-white transition-colors ${
-                        theme === "light"
-                          ? "bg-brand-blue hover:bg-blue-600"
-                          : "bg-brand-blue hover:bg-blue-500"
-                      }`}
-                    >
-                      Book Appointment
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p
-              className={`text-center py-6 text-sm ${
-                theme === "light"
-                  ? "text-light-text-tertiary"
-                  : "text-dark-text-tertiary"
-              }`}
-            >
-              No Vastu experts found
-            </p>
-          )}
-        </section>
+         
       </main>
+      <div className="">
+       {isLoading ? (
+            <Loader />
+          ) : (
+            <Experts
+              data={filteredExperts}
+              title={'Vastu'}
+              isLoading={isLoading}
+            />
+          )}
+     </div>
     </div>
   );
 };

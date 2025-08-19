@@ -36,11 +36,11 @@ const Experts: React.FC<ExpertsProps> = ({ data, title, isLoading }) => {
                 className="block"
               >
                 <div className="bg-white rounded-xl p-4 flex gap-3 shadow-md hover:shadow-lg transition-shadow duration-200">
-                  <div className="relative w-20 h-20">
+                  <div className="relative size-20">
                     <img
                       src={expert.imageUrl}
                       alt={expert.name}
-                      className="rounded-full object-cover"
+                      className="rounded-full size-20 object-cover"
                     />
                   </div>
                   <div className="flex-1">
