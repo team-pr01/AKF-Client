@@ -1,12 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { forwardRef } from "react";
-import type { FieldError } from "react-hook-form";
 
 interface TextareaProps {
   label: string;
   name: string;
   placeholder?: string;
   rows?: number;
-  error?: FieldError;
+  error?: any;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   isRequired?: boolean;

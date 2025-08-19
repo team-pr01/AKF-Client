@@ -2,35 +2,41 @@
 import React, { useEffect, useRef, useState } from "react";
 import PageHeader from "../../components/Reusable/PageHeader/PageHeader";
 import {
-  AkfPlaceholderIcon,
-  EmergencyIcon,
-  HomeIcon,
-  LearnIcon,
   SearchLucideIcon,
-  ShoppingBagIcon,
-  NewsIcon as NewsNavIcon,
   StopCircleIcon,
   MicIcon,
   BrainIcon,
   ClockIcon,
   StarIcon,
-  ChevronRightIcon,
-  XIcon,
-  HeartIcon,
-  LoaderIcon,
 } from "../../constants";
 import { useTheme } from "../../contexts/ThemeContext";
+import { useGetAllCategoriesQuery } from "../../redux/Features/Categories/ReelCategory/categoriesApi";
+import { useGetAllRecipiesQuery } from "../../redux/Features/Recipe/recipeApi";
+import Loader from "../../components/Shared/Loader/Loader";
+import { getEmbedUrl } from "../../utils/getEmbedUrl";
+import GenerateRecipeModal from "../../components/FoodPage/GenerateRecipeModal/GenerateRecipeModal";
 
 const Food = () => {
   const { theme } = useTheme();
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const { data, isLoading } = useGetAllRecipiesQuery({
+    category: selectedCategory,
+    keyword: searchQuery,
+  });
+  const { data: categoryData } = useGetAllCategoriesQuery({});
+  const filteredCategory = categoryData?.data?.filter(
+    (category: any) => category.areaName === "recipe"
+  );
+
+  const allCategories = filteredCategory?.map(
+    (category: any) => category.category
+  );
+
   const [showAIModal, setShowAIModal] = useState(false);
-  const [showRecipeModal, setShowRecipeModal] = useState(false);
-  const [selectedRecipe, setSelectedRecipe] = useState(null);
-  const [recipePrompt, setRecipePrompt] = useState("");
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // const [showRecipeModal, setShowRecipeModal] = useState(false);
+  // const [selectedRecipe, setSelectedRecipe] = useState(null);
+
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
 
@@ -78,163 +84,10 @@ const Food = () => {
     }
   };
 
-//   const handleGenerateRecipe = async () => {
-//     if (!recipePrompt.trim()) return;
-//     setIsGenerating(true);
-//     setError(null);
-//     try {
-//       const recipe = await AIRecipeService.generateRecipe(recipePrompt);
-//       setRecipePrompt("");
-//       setShowAIModal(false);
-//       setRecipes((prev) => [recipe, ...prev.filter((r) => r.id !== recipe.id)]);
-//       setSelectedRecipe(recipe);
-//       setShowRecipeModal(true);
-//     } catch (err: any) {
-//       console.error("Error generating recipe:", err);
-//       setError(err.message || "Failed to generate recipe. Please try again.");
-//     } finally {
-//       setIsGenerating(false);
-//     }
-//   };
-
-  const initialRecipes = [
-    {
-      id: "sattvic-khichdi",
-      name: "Sattvic Khichdi",
-      category: "sattvic",
-      ingredients: [
-        "Moong Dal (1/2 cup)",
-        "Rice (1/2 cup)",
-        "Ghee (1 tbsp)",
-        "Cumin Seeds (1 tsp)",
-        "Turmeric (1/2 tsp)",
-        "Water (3 cups)",
-        "Salt to taste",
-      ],
-      instructions: [
-        "Wash rice and dal thoroughly.",
-        "Heat ghee in a pressure cooker.",
-        "Add cumin seeds and let them crackle.",
-        "Add rice, dal, turmeric, and salt.",
-        "Add water and pressure cook for 3-4 whistles.",
-        "Let pressure release naturally. Serve hot with a dollop of ghee.",
-      ],
-      imageUrl:
-        "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&auto=format&fit=crop&q=60",
-      cookingTime: "30 mins",
-      difficulty: "Easy",
-      cuisine: "Vedic",
-    },
-    {
-      id: "prasad-halwa",
-      name: "Prasad Halwa",
-      category: "prasad",
-      ingredients: [
-        "Semolina (1 cup)",
-        "Ghee (1/2 cup)",
-        "Sugar (1 cup)",
-        "Water (2 cups)",
-        "Cardamom powder (1/2 tsp)",
-        "Mixed Nuts (2 tbsp, chopped)",
-      ],
-      instructions: [
-        "Heat ghee in a pan and roast semolina on low heat until golden brown and aromatic.",
-        "In a separate saucepan, bring water and sugar to a boil to make sugar syrup.",
-        "Gradually add the hot sugar syrup to the roasted semolina, stirring continuously to avoid lumps.",
-        "Add cardamom powder and cook until the halwa thickens and leaves the sides of the pan.",
-        "Garnish with chopped nuts and serve warm as prasad.",
-      ],
-      imageUrl:
-        "https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=800&auto=format&fit=crop&q=60",
-      cookingTime: "25 mins",
-      difficulty: "Medium",
-      cuisine: "Temple",
-    },
-    {
-      id: "ayurvedic-tea",
-      name: "Ayurvedic Herbal Tea",
-      category: "ayurvedic",
-      ingredients: [
-        "Water (2 cups)",
-        "Fresh Ginger (1 inch, grated)",
-        "Tulsi (Holy Basil) leaves (5-6)",
-        "Cardamom pods (2, crushed)",
-        "Cinnamon stick (1 inch)",
-        "Honey or Jaggery to taste (optional)",
-      ],
-      instructions: [
-        "Bring water to a boil in a saucepan.",
-        "Add grated ginger, tulsi leaves, crushed cardamom, and cinnamon stick.",
-        "Simmer on low heat for 5-7 minutes to let the flavors infuse.",
-        "Strain the tea into cups.",
-        "Add honey or jaggery if desired. Serve hot.",
-      ],
-      imageUrl:
-        "https://images.unsplash.com/photo-1571934811356-5cc819f459dc?w=800&auto=format&fit=crop&q=60",
-      cookingTime: "10 mins",
-      difficulty: "Easy",
-      cuisine: "Ayurvedic",
-    },
-  ];
-
-  const [recipes, setRecipes] = useState(initialRecipes);
-
-  const categories = [
-    { id: "all", name: "All", icon: <ShoppingBagIcon /> },
-    {
-      id: "sattvic",
-      name: "Sattvic",
-      icon: <span className="text-2xl">🌱</span>,
-    },
-    {
-      id: "prasad",
-      name: "Prasad",
-      icon: <span className="text-2xl">🍲</span>,
-    },
-    {
-      id: "ayurvedic",
-      name: "Ayurvedic",
-      icon: <span className="text-2xl">🌿</span>,
-    },
-    {
-      id: "fasting",
-      name: "Fasting",
-      icon: <span className="text-2xl">🍚</span>,
-    },
-  ];
-
-  const filteredRecipes = recipes.filter(
-    (recipe) =>
-      (selectedCategory === "all" ||
-        recipe.category.toLowerCase() === selectedCategory) &&
-      (!searchQuery ||
-        recipe.name.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
-
-  const handleViewRecipe = (recipe: any) => {
-    setSelectedRecipe(recipe);
-    setShowRecipeModal(true);
-  };
-
-  const foodPageNavItems = [
-    { id: "home", name: "Home", icon: <HomeIcon /> },
-    {
-      id: "learn",
-      name: "Learn",
-      icon: <LearnIcon />,
-    },
-    { id: "akf", name: "AKF", icon: <AkfPlaceholderIcon />, onClick: () => {} },
-    {
-      id: "news",
-      name: "News",
-      icon: <NewsNavIcon />,
-    },
-    {
-      id: "emergency",
-      name: "Emergency",
-      icon: <EmergencyIcon />,
-    },
-  ];
+  // const handleViewRecipe = (recipe: any) => {
+  //   setSelectedRecipe(recipe);
+  //   setShowRecipeModal(true);
+  // };
 
   return (
     <div className="min-h-screen bg-light-primary dark:bg-primary text-light-text-primary dark:text-dark-text-primary font-sans pb-20">
@@ -264,9 +117,7 @@ const Food = () => {
           <button
             onClick={handleVoiceSearch}
             aria-label={
-              isListening
-                ? "Stop voice search"
-                : "Start voice search"
+              isListening ? "Stop voice search" : "Start voice search"
             }
             className={`absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-full transition-colors ${
               isListening
@@ -313,13 +164,13 @@ const Food = () => {
       )}
 
       <div className="grid grid-cols-5 gap-2 sm:gap-4 p-4 mt-2">
-        {categories.map((category) => (
+        {allCategories?.map((category:any) => (
           <button
             key={category.id}
-            onClick={() => setSelectedCategory(category.id)}
+            onClick={() => setSelectedCategory(category)}
             className={`rounded-lg p-2 sm:p-4 flex flex-col items-center justify-center gap-1.5 text-center transition-all aspect-square shadow-md hover:shadow-lg transform hover:scale-105
               ${
-                selectedCategory === category.id
+                selectedCategory === category
                   ? `ring-2 ring-brand-orange ${
                       theme === "light"
                         ? "bg-light-surface"
@@ -332,125 +183,109 @@ const Food = () => {
                     }`
               }`}
             style={
-              selectedCategory === category.id && theme === "dark"
+              selectedCategory === category && theme === "dark"
                 ? ({
                     "--tw-shadow-color": "rgba(255,111,0,0.15)",
                   } as React.CSSProperties)
                 : {}
             }
-            aria-pressed={selectedCategory === category.id}
+            aria-pressed={selectedCategory === category}
           >
-            <div
-              className={`text-xl sm:text-2xl ${
-                selectedCategory === category.id
-                  ? "text-brand-orange animate-subtle-beat"
-                  : theme === "light"
-                  ? "text-light-text-secondary"
-                  : "text-dark-text-secondary"
-              }`}
-            >
-              {typeof category.icon === "string"
-                ? category.icon
-                : React.cloneElement(
-                    category.icon as React.ReactElement<{ className?: string }>,
-                    { className: "w-6 h-6 sm:w-7 sm:h-7" }
-                  )}
-            </div>
             <span
               className={`text-xs font-medium ${
-                selectedCategory === category.id
+                selectedCategory === category
                   ? "text-brand-orange"
                   : theme === "light"
                   ? "text-light-text-tertiary"
                   : "text-dark-text-tertiary"
               }`}
             >
-              {category.name}
+              {category}
             </span>
           </button>
         ))}
       </div>
 
       <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-        {filteredRecipes.map((recipe) => (
-          <div
-            key={recipe.id}
-            className={`rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl dark:hover:shadow-brand-yellow/30 hover:shadow-brand-orange/30 hover:transform hover:-translate-y-1.5 ${
-              theme === "light"
-                ? "bg-light-surface"
-                : "bg-dark-card animate-soft-breathing-shadow"
-            }`}
-            style={
-              theme === "dark"
-                ? ({
-                    "--tw-shadow-color": "rgba(255,193,7,0.1)",
-                  } as React.CSSProperties)
-                : {}
-            }
-          >
-            <img
-              src={recipe.imageUrl}
-              alt={recipe.name}
-              className="w-full h-48 object-cover"
-              loading="lazy"
-            />
-            <div className="p-4">
-              <h3
-                className={`font-semibold text-lg mb-2 truncate ${
-                  theme === "light"
-                    ? "text-light-text-primary"
-                    : "text-dark-text-primary"
-                }`}
-                title={recipe.name}
-              >
-                {recipe.name}
-              </h3>
-              <div
-                className={`flex items-center gap-4 text-sm mb-3 ${
-                  theme === "light"
-                    ? "text-light-text-secondary"
-                    : "text-dark-text-secondary"
-                }`}
-              >
-                <div className="flex items-center gap-1.5">
-                  <ClockIcon className="w-4 h-4" />
-                  <span>{recipe.cookingTime}</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <StarIcon className="w-4 h-4 text-yellow-400" />
-                  <span>{recipe.difficulty}</span>
-                </div>
-              </div>
-              <button
-                onClick={() => handleViewRecipe(recipe)}
-                className="w-full bg-gradient-to-r from-brand-orange to-yellow-500 hover:from-yellow-500 hover:to-brand-orange bg-200% animate-background-pan-fast transition-all duration-300 text-white rounded-lg py-2.5 flex items-center justify-center gap-2 font-medium shadow-md hover:shadow-lg"
-              >
-                <span>View Recipe</span>
-                <ChevronRightIcon className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        ))}
-        {filteredRecipes.length === 0 && !isGenerating && (
-          <div
-            className={`md:col-span-2 text-center py-10 ${
+        {data?.data?.length < 1 ? (
+          <p
+            className={`text-center py-6 text-sm ${
               theme === "light"
                 ? "text-light-text-tertiary"
                 : "text-dark-text-tertiary"
             }`}
           >
-            <p className="text-xl mb-2">(._.)</p>
-            <p>
-              No recipes found
-            </p>
-            <p className="text-sm mt-1">
-              Try a different search or category, or use the AI Recipe generator!
-            </p>
-          </div>
+            No Vastu tips found
+          </p>
+        ) : isLoading ? (
+          <Loader />
+        ) : (
+          data?.data?.map((recipe: any) => (
+            <div
+              key={recipe.id}
+              className={`rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl dark:hover:shadow-brand-yellow/30 hover:shadow-brand-orange/30 hover:transform hover:-translate-y-1.5 ${
+                theme === "light"
+                  ? "bg-light-surface"
+                  : "bg-dark-card animate-soft-breathing-shadow"
+              }`}
+              style={
+                theme === "dark"
+                  ? ({
+                      "--tw-shadow-color": "rgba(255,193,7,0.1)",
+                    } as React.CSSProperties)
+                  : {}
+              }
+            >
+              <div className="relative w-full h-48">
+                <iframe
+                  src={getEmbedUrl(recipe?.videoUrl) as string}
+                  className="absolute inset-0 w-full h-full"
+                  frameBorder="0"
+                  allow="autoplay; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
+              <div className="p-4">
+                <h3
+                  className={`font-semibold text-lg mb-2 truncate ${
+                    theme === "light"
+                      ? "text-light-text-primary"
+                      : "text-dark-text-primary"
+                  }`}
+                  title={recipe.name}
+                >
+                  {recipe.name}
+                </h3>
+                <div
+                  className={`flex items-center gap-4 text-sm mb-3 ${
+                    theme === "light"
+                      ? "text-light-text-secondary"
+                      : "text-dark-text-secondary"
+                  }`}
+                >
+                  <div className="flex items-center gap-1.5">
+                    <ClockIcon className="w-4 h-4" />
+                    <span>{recipe.duration}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <StarIcon className="w-4 h-4 text-yellow-400" />
+                    <span>{recipe.category}</span>
+                  </div>
+                </div>
+                {/* <button
+                  onClick={() => handleViewRecipe(recipe)}
+                  className="w-full bg-gradient-to-r from-brand-orange to-yellow-500 hover:from-yellow-500 hover:to-brand-orange bg-200% animate-background-pan-fast transition-all duration-300 text-white rounded-lg py-2.5 flex items-center justify-center gap-2 font-medium shadow-md hover:shadow-lg"
+                >
+                  <span>View Recipe</span>
+                  <ChevronRightIcon className="w-4 h-4" />
+                </button> */}
+              </div>
+            </div>
+          ))
         )}
       </div>
 
-      {showRecipeModal && selectedRecipe && (
+      {/* {showRecipeModal && selectedRecipe && (
         <div
           className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50"
           onClick={() => setShowRecipeModal(false)}
@@ -620,109 +455,10 @@ const Food = () => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       {showAIModal && (
-        <div
-          className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50"
-          onClick={() => setShowAIModal(false)}
-        >
-          <div
-            className={`rounded-xl p-6 w-full max-w-lg shadow-2xl animate-soft-breathing-shadow ${
-              theme === "light"
-                ? "bg-light-surface text-light-text-primary"
-                : "bg-dark-card text-dark-text-primary"
-            }`}
-            style={
-              {
-                "--tw-shadow-color":
-                  theme === "dark" ? "rgba(0,196,204,0.15)" : "rgba(0,0,0,0.1)",
-              } as React.CSSProperties
-            }
-            onClick={(e) => e.stopPropagation()}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="ai-recipe-title"
-          >
-            <div className="flex justify-between items-center mb-6">
-              <div className="flex items-center gap-3">
-                <BrainIcon className="w-6 h-6 text-brand-orange animate-subtle-beat" />
-                <h2
-                  id="ai-recipe-title"
-                  className="text-xl font-bold text-gradient bg-gradient-to-r from-brand-blue to-teal-400"
-                >
-                  AI Recipe Generator
-                </h2>
-              </div>
-              <button
-                onClick={() => setShowAIModal(false)}
-                className={`p-1.5 rounded-full ${
-                  theme === "light"
-                    ? "text-gray-500 hover:bg-gray-200"
-                    : "text-gray-400 hover:bg-gray-700"
-                }`}
-              >
-                <XIcon className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="space-y-4">
-              <div>
-                <label
-                  htmlFor="recipe-prompt"
-                  className={`block text-sm mb-1.5 ${
-                    theme === "light"
-                      ? "text-light-text-secondary"
-                      : "text-dark-text-secondary"
-                  }`}
-                >
-                 Describe the recipe you want (e.g., ingredients, cuisine, type):
-                </label>
-                <textarea
-                  id="recipe-prompt"
-                  value={recipePrompt}
-                  onChange={(e) => setRecipePrompt(e.target.value)}
-                  placeholder="E.g., A healthy sattvic breakfast using oats and fruits..."
-                  className={`w-full rounded-lg px-3 py-2.5 outline-none h-28 resize-none focus:ring-2 focus:ring-brand-orange ${
-                    theme === "light"
-                      ? "bg-light-surface-alt text-light-text-primary placeholder-light-text-tertiary border border-gray-300"
-                      : "bg-dark-surface-alt text-dark-text-primary placeholder-dark-text-tertiary border border-gray-600"
-                  }`}
-                />
-              </div>
-              {error && (
-                <div
-                  className={`rounded-lg p-3 text-sm ${
-                    theme === "light"
-                      ? "bg-red-100 border border-red-300 text-red-700"
-                      : "bg-red-500/10 border border-red-500/50 text-red-400"
-                  }`}
-                >
-                  {error}
-                </div>
-              )}
-              <button
-                // onClick={handleGenerateRecipe}
-                disabled={isGenerating || !recipePrompt.trim()}
-                className="w-full bg-gradient-to-r from-brand-blue to-teal-500 hover:from-teal-500 hover:to-brand-blue bg-200% animate-background-pan-fast transition-all duration-300 text-white rounded-lg py-3 flex items-center justify-center gap-2 font-medium disabled:opacity-60 disabled:cursor-not-allowed shadow-lg hover:shadow-brand-blue/40"
-              >
-                {isGenerating ? (
-                  <>
-                    <LoaderIcon className="w-5 h-5 animate-spin" />
-                    <span>
-                      Generating...
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    <span>
-                      Generate Recipe
-                    </span>
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
+        <GenerateRecipeModal setShowAIModal={setShowAIModal}/>
       )}
     </div>
   );

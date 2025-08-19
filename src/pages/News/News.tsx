@@ -110,8 +110,7 @@ const News = () => {
         </div>
       </div>
 
-
-     {/* mapping data */}
+      {/* mapping data */}
       <div className="p-4 space-y-4 pt-2">
         {data?.data?.length === 0 ? (
           <p
