@@ -209,48 +209,6 @@ export interface FilterOption {
   icon?: React.ReactElement<{ className?: string }>; 
 }
 
-export interface VerseTranslation {
-  pada?: string;
-  padartha?: string;
-  bhavartha?: string;
-}
-export interface Verse {
-  id: string; 
-  sanskritLines: string[]; 
-  devanagariLines?: string[]; 
-  englishTranslation?: string; 
-  bengaliTranslation?: string; 
-  aiTranslations?: Record<string, VerseTranslation>; 
-  humanVerifiedLanguages?: string[]; 
-  notes?: string;
-}
-
-export interface Subsection {
-  id: string; 
-  title: string; 
-  description?: string;
-  verses: Verse[];
-}
-
-export interface Section {
-  id: string; 
-  title: string; 
-  description?: string;
-  subsections: Subsection[];
-}
-
-export interface VedicText {
-  id: 'rigveda' | 'samaveda' | 'yajurveda' | 'atharvaveda' | 'manusmriti' | 'gita' | string; 
-  title: string; 
-  subtitle?: string; 
-  description: string; 
-  imageUrl: string; 
-  sections: Section[]; 
-  sectionLevelName?: string; 
-  subsectionLevelName?: string; 
-  verseLevelName?: string; 
-}
-
 export type CommunityEntityType = 'user' | 'organization' | 'temple';
 
 export interface CommunitySearchResultItem {

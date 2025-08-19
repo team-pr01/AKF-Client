@@ -9,8 +9,8 @@ import { useLocation } from "react-router-dom";
 import { useGetAllPopupsQuery } from "../../redux/Features/Popup/popupApi";
 
 const Home = () => {
+  // For popup modal
   const { data, isLoading } = useGetAllPopupsQuery({});
-  console.log(data);
   const location = useLocation();
   const [isWelcomePopupOpen, setIsWelcomePopupOpen] = useState(false);
   const [hasShownWelcomePopup, setHasShownWelcomePopup] = useState(false);
