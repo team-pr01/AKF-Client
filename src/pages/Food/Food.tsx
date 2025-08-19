@@ -20,7 +20,7 @@ const Food = () => {
   const { theme } = useTheme();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-  const { data, isLoading } = useGetAllRecipiesQuery({
+  const { data, isLoading, isFetching } = useGetAllRecipiesQuery({
     category: selectedCategory,
     keyword: searchQuery,
   });
@@ -90,9 +90,10 @@ const Food = () => {
   // };
 
   return (
-    <div className="min-h-screen bg-light-primary dark:bg-primary text-light-text-primary dark:text-dark-text-primary font-sans pb-20">
+    <div className="min-h-screen bg-light-primary dark:bg-primary text-light-text-primary dark:text-dark-text-primary font-sans">
       <PageHeader title={"Vedic Food & Recipes"} />
 
+<div className="p-4 flex flex-col gap-5">
       <div
         className={`p-4 flex flex-col sm:flex-row gap-2 sticky top-[60px] z-30 ${
           theme === "light"
@@ -163,50 +164,42 @@ const Food = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-5 gap-2 sm:gap-4 p-4 mt-2">
-        {allCategories?.map((category:any) => (
+      {/* Categories */}
+      <div className="flex gap-2 overflow-x-auto scrollbar-hide -mx-4 px-4">
+        <button
+          onClick={() => setSelectedCategory("")}
+          className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full whitespace-nowrap text-xs sm:text-sm transition-all duration-200 ease-in-out shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-opacity-50 ${
+            selectedCategory === ""
+              ? "bg-brand-orange text-white font-semibold"
+              : `${
+                  theme === "light"
+                    ? "bg-light-surface-alt text-light-text-secondary hover:bg-gray-200"
+                    : "bg-dark-surface-alt text-dark-text-secondary hover:bg-gray-700 hover:text-dark-text-primary"
+                }`
+          }`}
+        >
+          All
+        </button>
+        {allCategories?.map((category: any) => (
           <button
-            key={category.id}
+            key={category}
             onClick={() => setSelectedCategory(category)}
-            className={`rounded-lg p-2 sm:p-4 flex flex-col items-center justify-center gap-1.5 text-center transition-all aspect-square shadow-md hover:shadow-lg transform hover:scale-105
-              ${
-                selectedCategory === category
-                  ? `ring-2 ring-brand-orange ${
-                      theme === "light"
-                        ? "bg-light-surface"
-                        : "bg-dark-card animate-soft-breathing-shadow"
-                    }`
-                  : `${
-                      theme === "light"
-                        ? "bg-light-surface hover:bg-gray-200"
-                        : "bg-dark-surface-alt hover:bg-gray-700"
-                    }`
-              }`}
-            style={
-              selectedCategory === category && theme === "dark"
-                ? ({
-                    "--tw-shadow-color": "rgba(255,111,0,0.15)",
-                  } as React.CSSProperties)
-                : {}
-            }
-            aria-pressed={selectedCategory === category}
+            className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full whitespace-nowrap text-xs sm:text-sm transition-all duration-200 ease-in-out shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-opacity-50 ${
+              selectedCategory === category
+                ? "bg-brand-orange text-white font-semibold"
+                : `${
+                    theme === "light"
+                      ? "bg-light-surface-alt text-light-text-secondary hover:bg-gray-200"
+                      : "bg-dark-surface-alt text-dark-text-secondary hover:bg-gray-700 hover:text-dark-text-primary"
+                  }`
+            }`}
           >
-            <span
-              className={`text-xs font-medium ${
-                selectedCategory === category
-                  ? "text-brand-orange"
-                  : theme === "light"
-                  ? "text-light-text-tertiary"
-                  : "text-dark-text-tertiary"
-              }`}
-            >
-              {category}
-            </span>
+            {category}
           </button>
         ))}
       </div>
 
-      <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {data?.data?.length < 1 ? (
           <p
             className={`text-center py-6 text-sm ${
@@ -217,7 +210,7 @@ const Food = () => {
           >
             No Vastu tips found
           </p>
-        ) : isLoading ? (
+        ) : isLoading || isFetching ? (
           <Loader />
         ) : (
           data?.data?.map((recipe: any) => (
@@ -456,10 +449,9 @@ const Food = () => {
           </div>
         </div>
       )} */}
+      </div>
 
-      {showAIModal && (
-        <GenerateRecipeModal setShowAIModal={setShowAIModal}/>
-      )}
+      {showAIModal && <GenerateRecipeModal setShowAIModal={setShowAIModal} />}
     </div>
   );
 };
