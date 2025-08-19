@@ -1,13 +1,20 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { baseApi } from "../../API/baseApi";
 
 const templeApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllTemple: builder.query({
-      query: () => ({
-        url: `/temple`,
-        method: "GET",
-        credentials: "include",
-      }),
+      query: ({ keyword }) => {
+        console.log("Keyword for getAllTemple:", keyword);
+        return {
+          url: "/temple",
+          method: "GET",
+          credentials: "include",
+          params: {
+            keyword,
+          },
+        };
+      },
       providesTags: ["temple"],
     }),
 
@@ -31,7 +38,7 @@ const templeApi = baseApi.injectEndpoints({
     }),
 
     addEvent: builder.mutation<any, any>({
-      query: ({data, id}) => ({
+      query: ({ data, id }) => ({
         url: `/temple/${id}/events`,
         method: "POST",
         body: data,
@@ -50,7 +57,7 @@ const templeApi = baseApi.injectEndpoints({
     }),
 
     deleteEvent: builder.mutation<any, any>({
-      query: ({id, eventId}) => ({
+      query: ({ id, eventId }) => ({
         url: `/temple/${id}/events/${eventId}`,
         method: "DELETE",
         credentials: "include",

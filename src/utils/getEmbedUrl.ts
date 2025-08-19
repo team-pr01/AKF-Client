@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 export const getEmbedUrl = (url: string) => {
   const videoIdMatch = url.match(/(?:\?v=|\/embed\/|\.be\/)([\w\-]{11})/);
   return videoIdMatch

@@ -2,34 +2,48 @@
 import { useState } from "react";
 import PageHeader from "../../components/Reusable/PageHeader/PageHeader";
 import {
-  Building2Icon,
   LandmarkIcon,
   PlusIcon,
-  QuestionMarkIcon,
-  SchoolIcon,
   SearchLucideIcon,
 } from "../../constants";
 import { useTheme } from "../../contexts/ThemeContext";
-import { MOCK_SANATAN_STHAL_ITEMS } from "../../mockData";
+import { useGetAllTempleQuery } from "../../redux/Features/Temple/templeApi";
+import Loader from "../../components/Shared/Loader/Loader";
+
+export type TTemple = {
+  _id: string;
+  name: string;
+  mainDeity: string;
+  description: string;
+  address: string;
+  city: string;
+  state: string;
+  country: string;
+  establishedYear: number;
+  visitingHours: string;
+  contactInfo: {
+    phone: string;
+    email: string;
+    website?: string;
+  };
+  imageUrl: string;
+  videoUrl?: string;
+  createdBy: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  status: "pending" | "approved" | "rejected";
+};
 
 const Temple = () => {
   const { theme } = useTheme();
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const getTypeIcon = (type: any) => {
-    const iconClass = `w-5 h-5 ${
-      theme === "light" ? "text-brand-orange" : "text-brand-yellow"
-    }`;
-    switch (type) {
-      case "temple":
-        return <LandmarkIcon className={iconClass} />;
-      case "gurukul":
-        return <SchoolIcon className={iconClass} />;
-      case "org":
-        return <Building2Icon className={iconClass} />;
-      default:
-        return <QuestionMarkIcon className={iconClass} />;
-    }
-  };
+  const [searchQuery, setSearchQuery] = useState("");
+  const { data, isLoading, isFetching } = useGetAllTempleQuery({
+    keyword: searchQuery,
+  });
+  const approvedTemples =
+    data?.data?.filter((item: TTemple) => item.status === "approved") || [];
+
+    console.log(approvedTemples);
   return (
     <div className="min-h-screen bg-light-primary dark:bg-primary text-light-text-primary dark:text-dark-text-primary font-sans">
       <PageHeader title={"Sanatan Sthal Directory"} />
@@ -67,11 +81,15 @@ const Temple = () => {
                         }`}
           />
         </div>
-        {MOCK_SANATAN_STHAL_ITEMS.length > 0 ? (
+        {
+        isLoading || isFetching ?
+        <Loader/>
+        :
+        approvedTemples?.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {MOCK_SANATAN_STHAL_ITEMS.map((item) => (
+            {approvedTemples?.map((item: TTemple) => (
               <div
-                key={item.id}
+                key={item?._id}
                 className={`rounded-xl overflow-hidden shadow-lg cursor-pointer transition-all hover:shadow-brand-orange/20 dark:hover:shadow-brand-orange/30 hover:transform hover:-translate-y-1 
                             ${
                               theme === "light"
@@ -81,21 +99,10 @@ const Temple = () => {
               >
                 <div className="relative h-40">
                   <img
-                    src={item.image}
-                    alt={item.name}
+                    src={item?.imageUrl}
+                    alt={item?.name}
                     className="w-full h-full object-cover"
                   />
-                  <div
-                    className={`absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs flex items-center gap-1
-                                    ${
-                                      theme === "light"
-                                        ? "bg-black/50 text-white"
-                                        : "bg-black/70 text-gray-200"
-                                    }`}
-                  >
-                    {/* <StarIcon className="w-3 h-3 text-yellow-400" /> */}
-                    <span>{item.rating.toFixed(1)} ★</span>
-                  </div>
                 </div>
                 <div className="p-3">
                   <div
@@ -105,7 +112,7 @@ const Temple = () => {
                         : "text-dark-text-primary"
                     }`}
                   >
-                    {getTypeIcon(item.type)}
+                    {/* {getTypeIcon(item.type)} */}
                     <h3 className="font-semibold text-sm line-clamp-1">
                       {item.name}
                     </h3>
@@ -119,7 +126,7 @@ const Temple = () => {
                   >
                     <LandmarkIcon className="w-3 h-3" />{" "}
                     {/* Using LandmarkIcon as a generic location icon */}
-                    {item.location}
+                    {item?.city}, {item?.country}
                   </p>
                   <p
                     className={`text-xs line-clamp-2 ${
@@ -128,7 +135,7 @@ const Temple = () => {
                         : "text-dark-text-tertiary"
                     }`}
                   >
-                    {item.description}
+                    {item?.description}
                   </p>
                 </div>
               </div>
