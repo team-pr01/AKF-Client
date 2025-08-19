@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { baseApi } from "../../API/baseApi";
 
 const contentApi = baseApi.injectEndpoints({
@@ -21,45 +22,10 @@ const contentApi = baseApi.injectEndpoints({
       }),
       providesTags: ["content"],
     }),
-
-    addContent: builder.mutation<any, any>({
-      query: (data) => ({
-        url: `/content/create-content`,
-        method: "POST",
-        body: data,
-        credentials: "include",
-      }),
-      invalidatesTags: ["content"],
-    }),
-
-    deleteContent: builder.mutation<
-      any,
-      { contentId: string; type: "image" | "video"; url: string }
-    >({
-      query: (contentId) => ({
-        url: `/content/delete-content/${contentId}`,
-        method: "DELETE",
-        credentials: "include",
-      }),
-      invalidatesTags: ["content"],
-    }),
-
-    updateContent: builder.mutation<any, any>({
-      query: ({ id, data }) => ({
-        url: `/content/${id}`,
-        method: "PUT",
-        body: data,
-        credentials: "include",
-      }),
-      invalidatesTags: ["content"],
-    }),
   }),
 });
 
 export const {
   useGetAllContentsQuery,
   useGetSingleContentQuery,
-  useAddContentMutation,
-  useDeleteContentMutation,
-  useUpdateContentMutation,
 } = contentApi;
