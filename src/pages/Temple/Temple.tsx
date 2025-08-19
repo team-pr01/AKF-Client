@@ -1,14 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import PageHeader from "../../components/Reusable/PageHeader/PageHeader";
-import {
-  LandmarkIcon,
-  PlusIcon,
-  SearchLucideIcon,
-} from "../../constants";
+import { LandmarkIcon, PlusIcon, SearchLucideIcon } from "../../constants";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useGetAllTempleQuery } from "../../redux/Features/Temple/templeApi";
 import Loader from "../../components/Shared/Loader/Loader";
+import RegisterTempleModal from "../../components/TemplePage/RegisterTempleModal/RegisterTempleModal";
 
 export type TTemple = {
   _id: string;
@@ -35,6 +32,8 @@ export type TTemple = {
 };
 
 const Temple = () => {
+  const [showRegistrationModal, setShowRegistrationModal] =
+    useState<boolean>(false);
   const { theme } = useTheme();
   const [searchQuery, setSearchQuery] = useState("");
   const { data, isLoading, isFetching } = useGetAllTempleQuery({
@@ -43,15 +42,16 @@ const Temple = () => {
   const approvedTemples =
     data?.data?.filter((item: TTemple) => item.status === "approved") || [];
 
-    console.log(approvedTemples);
+  console.log(approvedTemples);
   return (
     <div className="min-h-screen bg-light-primary dark:bg-primary text-light-text-primary dark:text-dark-text-primary font-sans">
       <PageHeader title={"Sanatan Sthal Directory"} />
 
-      <div className="fixed bottom-5 right-4 z-30 sm:bottom-6 sm:right-6">
+      <div className="fixed bottom-20 right-4 z-30 sm:bottom-6 sm:right-6">
         {" "}
         {/* Adjusted positioning for better visibility */}
         <button
+          onClick={() => setShowRegistrationModal(true)}
           className={`w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-transform duration-200 ease-in-out hover:scale-110
                       ${
                         theme === "light"
@@ -81,11 +81,9 @@ const Temple = () => {
                         }`}
           />
         </div>
-        {
-        isLoading || isFetching ?
-        <Loader/>
-        :
-        approvedTemples?.length > 0 ? (
+        {isLoading || isFetching ? (
+          <Loader />
+        ) : approvedTemples?.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {approvedTemples?.map((item: TTemple) => (
               <div
@@ -154,15 +152,7 @@ const Temple = () => {
         )}
       </main>
 
-      {/* {showRegistrationModal && (
-        <RegistrationModal
-          isOpen={showRegistrationModal}
-          onClose={() => setShowRegistrationModal(false)}
-          onSubmit={handleRegister}
-        />
-      )}
-
-      {showDetailsModal && selectedItem && (
+      {/* {showDetailsModal && selectedItem && (
         <ItemDetailsModal
           item={selectedItem}
           isOpen={showDetailsModal}
@@ -181,6 +171,10 @@ const Temple = () => {
           }}
         />
       )} */}
+
+      {showRegistrationModal && (
+        <RegisterTempleModal onClose={() => setShowRegistrationModal(false)} />
+      )}
     </div>
   );
 };
