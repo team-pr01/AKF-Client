@@ -61,7 +61,7 @@ const Experts: React.FC<ExpertsProps> = ({ data, title, isLoading }) => {
                       <span className="text-xs font-medium text-emerald-500">{expert.availableTime}</span>
                     </div>
 
-                    <div className="flex gap-1.5">
+                    <div className="flex flex-wrap gap-1.5">
                       {expert.availabilityType.slice(0, 3).map((type) => (
                         <span 
                           key={type} 

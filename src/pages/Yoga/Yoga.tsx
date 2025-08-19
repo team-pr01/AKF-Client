@@ -5,16 +5,16 @@ import { SearchLucideIcon } from "../../constants";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useGetAllYogaQuery } from "../../redux/Features/Yoga/yogaApi";
 import { getEmbedUrl } from "../../utils/getEmbedUrl";
-import { useGetAlConsultancyServicesQuery } from "../../redux/Features/ConsultancyService/consultancyServiceApi";
 import Experts from "../../components/Reusable/Experts/Experts";
 import Loader from "../../components/Shared/Loader/Loader";
+import { useGetAllConsultancyServicesQuery } from "../../redux/Features/ConsultancyService/consultancyServiceApi";
 
 const Yoga = () => {
   const { data, isLoading } = useGetAllYogaQuery({});
    const {
     data: experts,
     isLoading: isExpertsLoading,
-  } = useGetAlConsultancyServicesQuery({});
+  } = useGetAllConsultancyServicesQuery({});
   const filteredExperts =
     experts?.data?.filter((expert: any) => expert.category === 'Yoga Expert') ||
     [];

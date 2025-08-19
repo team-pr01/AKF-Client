@@ -13,11 +13,10 @@ import {
   TempleIcon,
 } from "../../constants";
 import { useGetAllVastuQuery } from "../../redux/Features/Vastu/vastuApi";
-import { useGetAlConsultancyServicesQuery } from "../../redux/Features/ConsultancyService/consultancyServiceApi";
 import { getEmbedUrl } from "../../utils/getEmbedUrl";
 import Loader from "../../components/Shared/Loader/Loader";
 import Experts from "../../components/Reusable/Experts/Experts";
-
+import { useGetAllConsultancyServicesQuery } from "../../redux/Features/ConsultancyService/consultancyServiceApi";
 
 export type TVastu = {
   _id: string;
@@ -32,11 +31,15 @@ const Vastu = () => {
   const { theme } = useTheme();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-  const { data: vastu, isLoading: isVastuLoading, isFetching } = useGetAllVastuQuery({
+  const {
+    data: vastu,
+    isLoading: isVastuLoading,
+    isFetching,
+  } = useGetAllVastuQuery({
     keyword: searchQuery,
     category: selectedCategory,
   });
-  const { data, isLoading } = useGetAlConsultancyServicesQuery({});
+  const { data, isLoading } = useGetAllConsultancyServicesQuery({});
   const filteredExperts =
     data?.data?.filter((expert: any) => expert.category === "Vastu Expert") ||
     [];
@@ -177,55 +180,54 @@ const Vastu = () => {
           >
             Vastu Videos
           </h2>
-          {
-            isVastuLoading || isFetching ?
-            <Loader/>
-            :
+          {isVastuLoading || isFetching ? (
+            <Loader />
+          ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {
-            vastu?.data?.length < 1 ?
-            <p
-              className={`text-center py-6 text-sm ${
-                theme === "light"
-                  ? "text-light-text-tertiary"
-                  : "text-dark-text-tertiary"
-              }`}
-            >
-              No Vastu tips found
-            </p>
-            :
-            vastu?.data?.map((vastu:TVastu) => (
-              <div
-                key={vastu._id}
-                className={`rounded-lg overflow-hidden shadow-lg ${
-                  theme === "light" ? "bg-light-surface" : "bg-dark-card"
-                }`}
-              >
-                <div className="relative w-full h-48">
-                  <iframe
-                    src={getEmbedUrl(vastu.videoUrl) as string}
-                    className="absolute inset-0 w-full h-full"
-                    frameBorder="0"
-                    allow="autoplay; picture-in-picture"
-                    allowFullScreen
-                  />
-                </div>
-                <div className="p-3">
-                  <h3
-                    className={`font-medium text-sm truncate mb-1 ${
-                      theme === "light"
-                        ? "text-light-text-primary"
-                        : "text-dark-text-primary"
+              {vastu?.data?.length < 1 ? (
+                <p
+                  className={`text-center py-6 text-sm ${
+                    theme === "light"
+                      ? "text-light-text-tertiary"
+                      : "text-dark-text-tertiary"
+                  }`}
+                >
+                  No Vastu tips found
+                </p>
+              ) : (
+                vastu?.data?.map((vastu: TVastu) => (
+                  <div
+                    key={vastu._id}
+                    className={`rounded-lg overflow-hidden shadow-lg ${
+                      theme === "light" ? "bg-light-surface" : "bg-dark-card"
                     }`}
-                    title={vastu.title}
                   >
-                    {vastu.title}
-                  </h3>
-                </div>
-              </div>
-            ))}
-          </div>
-          }
+                    <div className="relative w-full h-48">
+                      <iframe
+                        src={getEmbedUrl(vastu.videoUrl) as string}
+                        className="absolute inset-0 w-full h-full"
+                        frameBorder="0"
+                        allow="autoplay; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                    <div className="p-3">
+                      <h3
+                        className={`font-medium text-sm truncate mb-1 ${
+                          theme === "light"
+                            ? "text-light-text-primary"
+                            : "text-dark-text-primary"
+                        }`}
+                        title={vastu.title}
+                      >
+                        {vastu.title}
+                      </h3>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
         </section>
 
         <section>
@@ -294,20 +296,18 @@ const Vastu = () => {
             </p>
           )}
         </section>
-
-         
       </main>
       <div className="">
-       {isLoading ? (
-            <Loader />
-          ) : (
-            <Experts
-              data={filteredExperts}
-              title={'Vastu'}
-              isLoading={isLoading}
-            />
-          )}
-     </div>
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <Experts
+            data={filteredExperts}
+            title={"Vastu"}
+            isLoading={isLoading}
+          />
+        )}
+      </div>
     </div>
   );
 };

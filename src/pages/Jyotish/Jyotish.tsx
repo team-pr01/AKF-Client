@@ -7,7 +7,7 @@ import type { VedicDate } from "../../types";
 import { calculateVedicDate } from "../../utils/vedicTime";
 import Loader from "../../components/Shared/Loader/Loader";
 import Experts from "../../components/Reusable/Experts/Experts";
-import { useGetAlConsultancyServicesQuery } from "../../redux/Features/ConsultancyService/consultancyServiceApi";
+import { useGetAllConsultancyServicesQuery } from "../../redux/Features/ConsultancyService/consultancyServiceApi";
 
 const Jyotish = () => {
   const { theme } = useTheme();
@@ -15,7 +15,7 @@ const Jyotish = () => {
   // const [selectedCategory, setSelectedCategory] = useState("");
 
   const { data: experts, isLoading: isExpertsLoading } =
-    useGetAlConsultancyServicesQuery({});
+    useGetAllConsultancyServicesQuery({});
   const filteredExperts =
     experts?.data?.filter(
       (expert: any) => expert.category === "Jyotish Expert"
