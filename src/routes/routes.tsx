@@ -16,6 +16,7 @@ import Jyotish from "../pages/Jyotish/Jyotish";
 import News from "../pages/News/News";
 import Learn from "../pages/Learn/Learn";
 import AiChatPage from "../pages/Learn/AiChatPage";
+import Notification from "../pages/Notification/Notification";
 
 export const router = createBrowserRouter([
   {
@@ -62,6 +63,10 @@ export const router = createBrowserRouter([
       {
         path: "/ai-chat",
         element: <AiChatPage/>,
+      },
+      {
+        path: "/notifications",
+        element: <Notification/>,
       },
     ],
   },

@@ -35,9 +35,10 @@ const Login = () => {
         password: data.password,
       };
       const response = await login(payload).unwrap();
-      const user = response?.user;
-      const accessToken = response.token;
-      const userRole = response?.user?.role;
+      const user = response?.data?.user;
+      const accessToken = response?.data.token;
+      const userRole = response?.data?.user?.role;
+      console.log(response?.data);
       
       if (accessToken) {
         Cookies.set("accessToken", accessToken, {
@@ -52,7 +53,7 @@ const Login = () => {
         });
       }
 
-      if (response?.message) {
+      if (response?.data?.user) {
         dispatch(setUser({ user, token: accessToken }));
         navigate("/");
       }

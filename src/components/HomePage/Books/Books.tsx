@@ -6,7 +6,6 @@ import Loader from "../../Shared/Loader/Loader";
 const Books = () => {
   const { theme } = useTheme();
   const { data: bookData, isLoading: isBooksLoading } = useGetAllBooksQuery({});
-  console.log(bookData);
 
   return (
     <section className="px-4 py-2 bg-light-primary dark:bg-primary">

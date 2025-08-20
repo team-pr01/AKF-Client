@@ -31,20 +31,10 @@ const authApi = baseApi.injectEndpoints({
     }),
 
     resetPassword: builder.mutation({
-      query: ({resetPasswordData, token}) => ({
+      query: ({ resetPasswordData, token }) => ({
         url: `/auth/reset-password/${token}`,
         method: "POST",
         body: resetPasswordData,
-        credentials: "include",
-      }),
-      invalidatesTags: ["users"],
-    }),
-
-    changeUserRole: builder.mutation({
-      query: (data) => ({
-        url: `/auth/change-role`,
-        method: "PUT",
-        body: data,
         credentials: "include",
       }),
       invalidatesTags: ["users"],
@@ -59,6 +49,14 @@ const authApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["users"],
     }),
+
+    getAllPushNotificationForUser: builder.query({
+      query: (userId) => ({
+        method: "GET",
+        url: `/pushNotification/${userId}`,
+      }),
+      providesTags: ["users"],
+    }),
   }),
 });
 
@@ -67,6 +65,6 @@ export const {
   useSignupMutation,
   useForgotPasswordMutation,
   useResetPasswordMutation,
-  useChangeUserRoleMutation,
   useAiChatMutation,
+  useGetAllPushNotificationForUserQuery,
 } = authApi;
