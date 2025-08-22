@@ -2,6 +2,13 @@ import { baseApi } from "../../API/baseApi";
 
 const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    getMe: builder.query({
+      query: () => ({
+        method: 'GET',
+        url: `/user/me`,
+      }),
+      providesTags: ['users'],
+    }),
     login: builder.mutation({
       query: (userInfo) => ({
         url: "/auth/login",

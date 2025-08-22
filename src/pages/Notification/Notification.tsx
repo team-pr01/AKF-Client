@@ -6,13 +6,15 @@ import { useEffect, useState } from "react";
 import { socket } from "../../utils/socket";
 import NotificationCard from "../../components/NotificationPage/NotificationCard/NotificationCard";
 import PageHeader from "../../components/Reusable/PageHeader/PageHeader";
+import Loader from "../../components/Shared/Loader/Loader";
+import { useTheme } from "../../contexts/ThemeContext";
 
 const Notification = () => {
+  const { theme } = useTheme();
   const user = useSelector(useCurrentUser) as any;
   console.log(user);
-  const { data: allPushNotifications } = useGetAllPushNotificationForUserQuery(
-    user?._id
-  );
+  const { data: allPushNotifications, isLoading } =
+    useGetAllPushNotificationForUserQuery(user?._id);
 
   // const [unreadCount, setUnreadCount] = useState(0);
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -58,12 +60,26 @@ const Notification = () => {
     <div>
       <PageHeader title={`Notifications `} />
       <div className="flex flex-col gap-4 mb-20 p-4">
-        {allPushNotifications?.data.map((notification: any) => (
-          <NotificationCard
-            key={notification._id}
-            notification={notification}
-          />
-        ))}
+        {isLoading ? (
+          <Loader />
+        ) : notifications.length < 1 ? (
+          <p
+            className={`text-center py-6 text-sm ${
+              theme === "light"
+                ? "text-light-text-tertiary"
+                : "text-dark-text-tertiary"
+            }`}
+          >
+            No notification found
+          </p>
+        ) : (
+          allPushNotifications?.data.map((notification: any) => (
+            <NotificationCard
+              key={notification._id}
+              notification={notification}
+            />
+          ))
+        )}
       </div>
     </div>
   );

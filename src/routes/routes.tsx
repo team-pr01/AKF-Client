@@ -19,6 +19,8 @@ import AiChatPage from "../pages/Learn/AiChatPage";
 import Notification from "../pages/Notification/Notification";
 import AttendQuiz from "../pages/Learn/AttentQuiz";
 import QuizResult from "../pages/QuizResult/QuizResult";
+import MyProfile from "../pages/MyProfile/MyProfile";
+import Settings from "../pages/Settings/Settings";
 
 export const router = createBrowserRouter([
   {
@@ -69,6 +71,14 @@ export const router = createBrowserRouter([
       {
         path: "/notifications",
         element: <Notification/>,
+      },
+      {
+        path: "/my-profile",
+        element: <MyProfile/>,
+      },
+      {
+        path: "/settings",
+        element: <Settings/>,
       },
       {
         path: "/attend-quiz/:id",
