@@ -2,7 +2,7 @@
 import { forwardRef } from "react";
 
 interface TextareaProps {
-  label: string;
+  label?: string;
   name: string;
   placeholder?: string;
   rows?: number;
@@ -29,13 +29,15 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   ) => {
     return (
       <div className="flex flex-col gap-2 font-Inter">
-        <label htmlFor={name} className="text-neutral-65">
-          {label}
-          <span className="text-red-600">
-            {" "}
-            {isRequired && <span className="text-red-600"> *</span>}
-          </span>
-        </label>
+        {label && (
+          <label htmlFor={name} className="text-neutral-65">
+            {label}
+            <span className="text-red-600">
+              {" "}
+              {isRequired && <span className="text-red-600"> *</span>}
+            </span>
+          </label>
+        )}
         <textarea
           id={name}
           name={name}
@@ -44,8 +46,9 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           rows={rows}
           ref={ref}
           disabled={isDisabled}
-          className={`px-[18px] py-[14px] rounded-lg border focus:outline-none focus:border-brand-orange transition duration-300 ${isDisabled ? "bg-neutral-200/50" : "bg-neutral-50"} ${error ? "border-red-500" : "border-neutral-400"
-            }`}
+          className={`px-[18px] py-[14px] rounded-lg border focus:outline-none focus:border-brand-orange transition duration-300 ${
+            isDisabled ? "bg-neutral-200/50" : "bg-neutral-50"
+          } ${error ? "border-red-500" : "border-neutral-400"}`}
           {...rest}
         ></textarea>
         {error && <span className="text-red-500 text-sm">{error.message}</span>}

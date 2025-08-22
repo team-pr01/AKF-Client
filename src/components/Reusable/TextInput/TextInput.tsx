@@ -3,7 +3,7 @@ import { forwardRef } from "react";
 import type { FieldError, FieldErrorsImpl, Merge } from "react-hook-form";
 
 interface TextInputProps {
-  label: string;
+  label?: string;
   name: string;
   placeholder?: string;
   type?: string;
@@ -17,16 +17,29 @@ interface TextInputProps {
 }
 
 const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
-  ({ label, name, placeholder = "", type = "text", error, defaultValue, isDisabled = false, isRequired = true, onKeyDown, ...rest }, ref) => {
+  (
+    {
+      label,
+      name,
+      placeholder = "",
+      type = "text",
+      error,
+      defaultValue,
+      isDisabled = false,
+      isRequired = true,
+      onKeyDown,
+      ...rest
+    },
+    ref
+  ) => {
     return (
       <div className="flex flex-col gap-2 font-Inter w-full">
-        <label htmlFor={name} className="text-neutral-65">
-          {label}
-          {
-            isRequired &&
-            <span className="text-red-600"> *</span>
-          }
-        </label>
+        {label && (
+          <label htmlFor={name} className="text-neutral-65">
+            {label}
+            {isRequired && <span className="text-red-600"> *</span>}
+          </label>
+        )}
         <input
           required={isRequired}
           id={name}
@@ -37,8 +50,9 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
           onKeyDown={onKeyDown}
           ref={ref}
           disabled={isDisabled}
-          className={`px-[18px] py-[14px] rounded-lg border focus:outline-none focus:border-brand-orange transition duration-300 ${isDisabled ? "bg-neutral-200/50" : "bg-neutral-50"} ${error ? "border-red-500" : "border-neutral-400"
-            }`}
+          className={`px-[18px] py-[14px] rounded-lg border focus:outline-none focus:border-brand-orange transition duration-300 ${
+            isDisabled ? "bg-neutral-200/50" : "bg-neutral-50"
+          } ${error ? "border-red-500" : "border-neutral-400"}`}
           {...rest}
         />
         {error?.message && (

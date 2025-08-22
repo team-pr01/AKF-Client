@@ -21,6 +21,7 @@ import AttendQuiz from "../pages/Learn/AttentQuiz";
 import QuizResult from "../pages/QuizResult/QuizResult";
 import MyProfile from "../pages/MyProfile/MyProfile";
 import Settings from "../pages/Settings/Settings";
+import Emergency from "../pages/Emergency/Emergency";
 
 export const router = createBrowserRouter([
   {
@@ -87,6 +88,10 @@ export const router = createBrowserRouter([
       {
         path: "/quiz-result",
         element: <QuizResult/>,
+      },
+      {
+        path: "/emergency",
+        element: <Emergency/>,
       },
     ],
   },
