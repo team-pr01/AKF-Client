@@ -49,10 +49,10 @@ const WelcomePopupModal: React.FC<WelcomePopupModalProps> = ({
         {/* Close button remains at the top right of the entire modal card */}
         <button
           onClick={onClose}
-          className={`absolute top-3 right-3 z-10 p-2 rounded-full transition-colors
+          className={`absolute text-2xl top-0 right-0 z-10 p-2 rounded-full transition-colors
               ${
                 theme === "light"
-                  ? "text-gray-500 hover:bg-gray-200 hover:text-gray-700"
+                  ? "text-white hover:bg-gray-200 hover:text-gray-700"
                   : "text-gray-400 hover:bg-gray-700 hover:text-white"
               }
             `}
