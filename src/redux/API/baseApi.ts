@@ -1,17 +1,15 @@
 import { setUser } from "../Features/Auth/authSlice";
 import type { RootState } from "../store";
-import { 
-  createApi, 
-  fetchBaseQuery,
-} from "@reduxjs/toolkit/query/react";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type {
   BaseQueryFn,
   FetchArgs,
   FetchBaseQueryError,
-} from '@reduxjs/toolkit/query';
+} from "@reduxjs/toolkit/query";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: "https://vedic-app-server.onrender.com/api/v1",
+  // baseUrl: "http://localhost:5000/api/v1",
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).auth.token;
@@ -34,7 +32,7 @@ const baseQueryWithRefreshToken: BaseQueryFn<
     const res = await fetch(
       `https://vedic-app-server.onrender.com/api/v1/auth/refresh-token`,
       {
-        method: 'POST',
+        method: "POST",
         credentials: "include",
       }
     );
@@ -77,9 +75,9 @@ export const baseApi = createApi({
     "apiKeys",
     "course",
     "recipe",
-    'content',
-    'donations',
-    'quiz',
+    "content",
+    "donations",
+    "quiz",
   ],
   endpoints: () => ({}),
 });
