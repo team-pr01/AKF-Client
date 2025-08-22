@@ -5,6 +5,7 @@ import TabButton from "../../components/LearnPage/TabButton/TabButton";
 import Courses from "../../components/LearnPage/Courses/Courses";
 import Videos from "../../components/LearnPage/Videos/Videos";
 import AIChat from "../../components/LearnPage/AIChat/AIChat";
+import Quiz from "./Quiz";
 
 
 const Learn = () => {
@@ -32,6 +33,9 @@ const Learn = () => {
         }
         {
           activeTab === "ai" && <AIChat/>
+        }
+        {
+          activeTab === "quiz" && <Quiz/>
         }
       </div>
 

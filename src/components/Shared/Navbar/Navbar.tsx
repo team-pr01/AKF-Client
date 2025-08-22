@@ -7,6 +7,7 @@ import {
 } from "../../../constants";
 import { calculateVedicDate } from "../../../utils/vedicTime";
 import type { VedicDate } from "../../../types";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const [isSideNavOpen, setIsSideNavOpen] = useState(false);
@@ -48,12 +49,12 @@ const Navbar = () => {
         )}
       </div>
       <div className="flex items-center space-x-1 sm:space-x-2">
-        <button
-          aria-label="View notifications"
+        <Link
+        to={"/notifications"}
           className="p-2 text-gray-600 dark:text-gray-300 hover:text-brand-orange dark:hover:text-brand-yellow transition-colors"
         >
           <BellIcon className="w-6 h-6" />
-        </button>
+        </Link>
         <button
           aria-label="User profile"
           className="p-2 text-gray-600 dark:text-gray-300 hover:text-brand-orange dark:hover:text-brand-yellow transition-colors"

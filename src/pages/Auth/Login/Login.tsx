@@ -35,10 +35,11 @@ const Login = () => {
         password: data.password,
       };
       const response = await login(payload).unwrap();
+      console.log(response);
       const user = response?.data?.user;
-      const accessToken = response?.data.token;
+      const accessToken = response?.data?.accessToken;
       const userRole = response?.data?.user?.role;
-      console.log(response?.data);
+      console.log(response);
       
       if (accessToken) {
         Cookies.set("accessToken", accessToken, {
