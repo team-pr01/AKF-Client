@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import {
   ChevronRightIcon,
@@ -12,12 +13,14 @@ import {
 } from "../../constants";
 import { useTheme } from "../../contexts/ThemeContext";
 import PageHeader from "../../components/Reusable/PageHeader/PageHeader";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { logout } from "../../redux/Features/Auth/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { logout, useCurrentUser } from "../../redux/Features/Auth/authSlice";
+import { CgEnter } from "react-icons/cg";
 
 const Settings = () => {
   const { theme, toggleTheme } = useTheme();
+  const user = useSelector(useCurrentUser) as any;
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [communityUpdates, setCommunityUpdates] = useState(true);
@@ -162,13 +165,28 @@ const Settings = () => {
         </section>
 
         <div className="pt-4">
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-2 bg-red-500/10 hover:bg-red-500/20 dark:bg-red-600/20 dark:hover:bg-red-600/30 transition-colors text-red-500 dark:text-red-400 rounded-lg py-3 text-sm font-medium"
-          >
-            <LogOutIcon className="w-5 h-5" />
-            Logout
-          </button>
+          {user ? (
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center justify-center gap-2 bg-red-500/10 hover:bg-red-500/20 dark:bg-red-600/20 dark:hover:bg-red-600/30 transition-colors text-red-500 dark:text-red-400 rounded-lg py-3 text-sm font-medium"
+            >
+              <LogOutIcon className="w-5 h-5" />
+              Logout
+            </button>
+          ) : (
+            <Link
+              to="/auth/login"
+              className={`mt-4 text-brand-orange rounded-lg px-5 py-2 text-sm font-medium flex items-center justify-center gap-2 mx-auto transition-colors
+                        ${
+                          theme === "light"
+                            ? "bg-brand-orange/10 hover:bg-brand-orange/20"
+                            : "bg-brand-orange/20 hover:bg-brand-orange/30"
+                        }`}
+            >
+              <CgEnter className="w-4 h-4" />
+              Login
+            </Link>
+          )}
         </div>
       </main>
 

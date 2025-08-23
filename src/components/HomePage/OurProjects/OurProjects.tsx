@@ -2,21 +2,39 @@
 import { HeartIcon } from "../../../constants";
 import { useTheme } from "../../../contexts/ThemeContext";
 import { useGetAllDonationProgramsQuery } from "../../../redux/Features/DonationPrograms/donationProgramApi";
-import Loader from "../../Shared/Loader/Loader";
 
 const OurProjects = () => {
   const { theme } = useTheme();
   const { data: programData, isLoading: isProgramLoading } =
     useGetAllDonationProgramsQuery({});
+
   return (
     <section className="px-4 py-2 bg-light-primary dark:bg-primary mb-20">
       <h2 className="text-xl font-semibold dark:text-dark-text-primary mb-3 text-gradient bg-gradient-to-r from-brand-blue to-emerald-500 bg-clip-text text-transparent">
         Our Projects
       </h2>
+
       <div className="flex space-x-3 overflow-x-auto scrollbar-hide pb-3">
-        {" "}
-        {/* Increased space-x slightly and pb */}
-        {programData?.data?.length < 1 ? (
+        {isProgramLoading ? (
+          Array.from({ length: 3 }).map((_, index) => (
+            <div
+              key={index}
+              className="flex-shrink-0 w-64 sm:w-72 cursor-pointer"
+            >
+              <div className="relative h-44 sm:h-52 rounded-lg overflow-hidden shadow-md border border-gray-200 dark:border-gray-700 animate-pulse bg-gray-100 dark:bg-gray-800">
+                {/* Image placeholder */}
+                <div className="w-full h-full bg-gray-200 dark:bg-gray-700" />
+
+                {/* Content placeholder */}
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-100/90 via-gray-100/60 to-transparent dark:from-gray-800/90 dark:via-gray-800/60 dark:to-transparent p-3 flex flex-col justify-end">
+                  <div className="h-4 w-28 bg-gray-300 dark:bg-gray-600 rounded mb-2" />
+                  <div className="h-3 w-40 bg-gray-300 dark:bg-gray-600 rounded mb-2" />
+                  <div className="h-8 w-full bg-gray-300 dark:bg-gray-600 rounded" />
+                </div>
+              </div>
+            </div>
+          ))
+        ) : programData?.data?.length < 1 ? (
           <p
             className={`text-center py-6 text-sm ${
               theme === "light"
@@ -26,10 +44,8 @@ const OurProjects = () => {
           >
             Projects are coming soon.
           </p>
-        ) : isProgramLoading ? (
-          <Loader />
         ) : (
-          programData?.data?.map((item:any, index:number) => (
+          programData?.data?.map((item: any, index: number) => (
             <div
               key={item._id}
               className="flex-shrink-0 w-64 sm:w-72 group cursor-pointer transform hover:scale-105 transition-transform duration-300 ease-in-out"
@@ -63,10 +79,6 @@ const OurProjects = () => {
                     </p>
                   )}
                   <button
-                    // onClick={(e) => { // Removed as the parent div is now clickable
-                    //     e.stopPropagation();
-                    //     onProjectClick(item);
-                    // }}
                     className="mt-auto w-full bg-gradient-to-r from-brand-orange to-yellow-400 dark:from-brand-orange dark:to-yellow-500 hover:from-yellow-400 hover:to-brand-orange dark:hover:from-yellow-500 dark:hover:to-brand-orange bg-200% animate-background-pan-fast transition-all duration-300 text-white rounded-md py-2 px-3 text-xs font-medium flex items-center justify-center gap-1.5 shadow-md hover:shadow-lg"
                     aria-label={`Donate to ${item.title}`}
                   >

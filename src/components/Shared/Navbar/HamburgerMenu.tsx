@@ -11,8 +11,13 @@ import { useTheme } from "../../../contexts/ThemeContext";
 import { logout, useCurrentUser } from "../../../redux/Features/Auth/authSlice";
 import { Link, useNavigate } from "react-router-dom";
 
-const HamburgerMenu = ({isHamburgerMenuOpen, setHamburgerMenuOpen} : {isHamburgerMenuOpen: boolean, setHamburgerMenuOpen: any}) => {
-  
+const HamburgerMenu = ({
+  isHamburgerMenuOpen,
+  setHamburgerMenuOpen,
+}: {
+  isHamburgerMenuOpen: boolean;
+  setHamburgerMenuOpen: any;
+}) => {
   const user = useSelector(useCurrentUser) as any;
   const { theme } = useTheme();
   const dispatch = useDispatch();
@@ -34,12 +39,13 @@ const HamburgerMenu = ({isHamburgerMenuOpen, setHamburgerMenuOpen} : {isHamburge
     <>
       {/* Overlay */}
       <div
-        className={`fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 ease-in-out
-                    ${
-                      isHamburgerMenuOpen
-                        ? "opacity-100 pointer-events-auto"
-                        : "opacity-0 pointer-events-none"
-                    }`}
+        className={`fixed inset-0 bg-black/50 z-40 
+              transition-opacity duration-500 ease-in-out
+              ${
+                isHamburgerMenuOpen
+                  ? "opacity-100 pointer-events-auto"
+                  : "opacity-0 pointer-events-none"
+              }`}
         onClick={() => setHamburgerMenuOpen(false)}
         aria-hidden={!isHamburgerMenuOpen}
       />
@@ -47,15 +53,13 @@ const HamburgerMenu = ({isHamburgerMenuOpen, setHamburgerMenuOpen} : {isHamburge
       {/* Side Navigation Panel */}
       <div
         className={`fixed top-0 left-0 h-full w-72 shadow-xl z-50 
-                    transform transition-transform duration-300 ease-in-out
-                    ${
-                      theme === "light" ? "bg-light-surface" : "bg-dark-surface"
-                    }
-                    ${
-                      isHamburgerMenuOpen
-                        ? "translate-x-0"
-                        : "-translate-x-full"
-                    }`}
+              transform transition-all duration-500 ease-in-out
+              ${theme === "light" ? "bg-light-surface" : "bg-dark-surface"}
+              ${
+                isHamburgerMenuOpen
+                  ? "translate-x-0 opacity-100 delay-150"
+                  : "-translate-x-full opacity-0 delay-0"
+              }`}
         role="navigation"
         aria-label="Main menu"
         aria-hidden={!isHamburgerMenuOpen}
