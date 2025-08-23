@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useGetAllContentsQuery } from "../../../redux/Features/Content/contentApi";
 import { getEmbedUrl } from "../../../utils/getEmbedUrl";
+import { useTheme } from "../../../contexts/ThemeContext";
 
 function debounce<F extends (...args: any[]) => any>(
   func: F,
@@ -17,6 +18,7 @@ function debounce<F extends (...args: any[]) => any>(
 }
 
 const Hero = () => {
+  const { theme } = useTheme();
   const { data, isLoading } = useGetAllContentsQuery({});
   const [currentHeroSlide, setCurrentHeroSlide] = useState(0);
   const heroScrollContainerRef = useRef<HTMLDivElement>(null);
@@ -118,7 +120,11 @@ const Hero = () => {
 
   if (isLoading) {
     return (
-      <div className="relative bg-light-surface dark:bg-dark-surface h-96 flex items-center justify-center">
+      <div className={`relative h-96 flex items-center justify-center ${
+        theme === "light"
+          ? "bg-light-primary"
+          : "bg-primary"
+      }`}>
         <div className="animate-pulse text-gray-500">
           Loading hero content...
         </div>
@@ -128,14 +134,22 @@ const Hero = () => {
 
   if (!contents || contents.length === 0) {
     return (
-      <div className="relative bg-light-surface dark:bg-dark-surface h-96 flex items-center justify-center">
-        <div className="text-gray-500">No hero content available</div>
+      <div className={`relative h-96 flex items-center justify-center ${
+        theme === "light"
+          ? "bg-light-primary text-light-text-primary"
+          : "bg-primary text-dark-text-primary"
+      }`}>
+        <div>No hero content available</div>
       </div>
     );
   }
 
   return (
-    <div className="relative bg-light-surface dark:bg-dark-surface">
+    <div className={`relative  ${
+        theme === "light"
+          ? "bg-light-primary"
+          : "bg-primary"
+      }`}>
       <div
         ref={heroScrollContainerRef}
         className="flex overflow-x-auto scrollbar-hide snap-x snap-mandatory h-full"
