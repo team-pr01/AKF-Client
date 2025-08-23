@@ -53,7 +53,11 @@ const News = () => {
   };
 
   return (
-    <div className="min-h-screen bg-light-primary dark:bg-primary text-light-text-primary dark:text-dark-text-primary font-sans pb-20">
+    <div className={`min-h-screen text-light-text-primary dark:text-dark-text-primary font-sans pb-20 ${
+          theme === "light"
+            ? "bg-white"
+            : "bg-gray-800 animate-soft-breathing-shadow"
+        }`}>
       <PageHeader title={"News Feed"} />
 
       <div
@@ -63,7 +67,7 @@ const News = () => {
             : "bg-primary border-gray-700/50 shadow-md"
         }`}
       >
-        <div className="flex flex-col sm:flex-row gap-2">
+        <div className="flex flex-col sm:flex-row gap-3">
           <div className="flex-1 relative">
             <SearchLucideIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-brand-orange" />
             <input
@@ -71,7 +75,11 @@ const News = () => {
               placeholder="Search news..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className={`w-full bg-light-surface dark:bg-dark-surface-alt pl-10 pr-4 py-3 rounded-lg outline-none text-light-text-primary dark:text-dark-text-primary placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary focus:ring-2 focus:ring-brand-orange transition-shadow focus:shadow-lg`}
+              className={`w-full pl-10 pr-4 py-3 rounded-lg outline-none text-light-text-primary dark:text-dark-text-primary placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary focus:ring-2 focus:ring-brand-orange transition-shadow focus:shadow-lg ${
+          theme === "light"
+            ? "bg-white"
+            : "bg-gray-800 animate-soft-breathing-shadow"
+        }`}
             />
           </div>
           <div className="flex gap-2 overflow-x-auto scrollbar-hide -mx-4 px-4">
@@ -111,7 +119,11 @@ const News = () => {
       </div>
 
       {/* mapping data */}
-      <div className="p-4 space-y-4 pt-2">
+      <div className={`p-4 space-y-4 pt-2 ${
+          theme === "light"
+            ? "bg-white"
+            : "bg-gray-800 animate-soft-breathing-shadow"
+        }`}>
         {data?.data?.length === 0 ? (
           <p
             className={`text-center py-6 text-sm ${

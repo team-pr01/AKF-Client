@@ -44,7 +44,13 @@ const Temple = () => {
 
   console.log(approvedTemples);
   return (
-    <div className="min-h-screen bg-light-primary dark:bg-primary text-light-text-primary dark:text-dark-text-primary font-sans">
+    <div
+      className={`min-h-screen font-sans ${
+        theme === "light"
+          ? "bg-light-primary text-light-text-primary"
+          : "bg-primary text-dark-text-primary"
+      }`}
+    >
       <PageHeader title={"Sanatan Sthal Directory"} />
 
       <div className="fixed bottom-20 right-4 z-30 sm:bottom-6 sm:right-6">
@@ -63,7 +69,7 @@ const Temple = () => {
         </button>
       </div>
 
-      <main className="p-4 pb-5 space-y-4">
+      <main className="p-4 pb-24 space-y-4">
         {" "}
         {/* Adjusted pb to remove conflict with potential global BottomNavBar space */}
         <div className="relative">

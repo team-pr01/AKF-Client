@@ -60,7 +60,11 @@ const AiChatPage = () => {
   }, [conversation]);
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className={`flex flex-col h-screen ${
+          theme === "light"
+            ? "bg-white"
+            : "bg-gray-800 animate-soft-breathing-shadow"
+        }`}>
       <div
         id="chat-container"
         className="flex-1 overflow-y-auto p-4 space-y-4 pb-24 max-h-[90%]"

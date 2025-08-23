@@ -12,7 +12,11 @@ const Learn = () => {
     const { theme } = useTheme();
     const [activeTab, setActiveTab] = useState("courses");
     return (
-        <div className="min-h-screen bg-light-primary dark:bg-primary text-light-text-primary dark:text-dark-text-primary font-sans pb-20">
+        <div className={`min-h-screen font-sans pb-20 ${
+          theme === "light"
+            ? "bg-white text-light-text-primary"
+            : "bg-gray-800 text-dark-text-primary animate-soft-breathing-shadow"
+        }`}>
       <PageHeader title="Learn & Explore" />
 
       <div className={`p-4 sticky top-[60px] z-30 mb-2 ${theme === 'light' ? 'bg-light-primary dark:bg-dark-primary shadow-sm' : 'bg-primary dark:bg-black shadow-md'}`}>

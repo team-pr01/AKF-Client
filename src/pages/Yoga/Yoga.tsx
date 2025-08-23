@@ -32,7 +32,11 @@ const Yoga = () => {
   
 
   return (
-    <div className="h-full bg-light-primary dark:bg-primary text-light-text-primary dark:text-dark-text-primary font-sans">
+    <div className={`h-full font-sans ${
+          theme === "light"
+            ? "bg-light-primary text-light-text-primary"
+            : "bg-primary text-dark-text-primary"
+        }`}>
       <PageHeader title={"Yoga Programs"} />
 
       <main className="px-4 pt-4">
@@ -157,19 +161,19 @@ const Yoga = () => {
                  </div>
                   <div className="p-4">
                     <h3
-                      className={`font-semibold text-base text-light-text-primary dark:text-dark-text-primary mb-1.5 truncate`}
+                      className={`font-semibold text-base mb-1.5 truncate ${theme === "light" ? "text-light-text-primary" : "text-dark-text-primary"}`}
                       title={program.name}
                     >
                       {program.name}
                     </h3>
                     <p
-                      className={`text-sm text-light-text-secondary dark:text-dark-text-secondary`}
+                      className={`text-sm ${theme === "light" ? "text-light-text-secondary" : "text-dark-text-secondary"}`}
                     >
                       {program.description}
                     </p>
 
                     <span
-                      className={`text-sm text-light-text-secondary dark:text-dark-text-secondary`}
+                      className={`text-sm ${theme === "light" ? "text-light-text-secondary" : "text-dark-text-secondary"}`}
                     >
                       Duration: {program.duration}
                     </span>
@@ -178,7 +182,7 @@ const Yoga = () => {
               ))
             ) : (
               <div
-                className={`sm:col-span-2 text-center py-10 text-light-text-tertiary dark:text-dark-text-tertiary`}
+                className={`sm:col-span-2 text-center py-10 ${theme === "light" ? "text-light-text-secondary" : "text-dark-text-secondary"}`}
               >
                 <p className="text-lg mb-2">(╥_╥)</p>
                 <p>No yoga programs found matching your criteria.</p>

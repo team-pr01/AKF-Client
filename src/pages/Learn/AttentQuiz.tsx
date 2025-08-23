@@ -76,7 +76,11 @@ const AttendQuiz = () => {
   const quiz = data?.data;
 
   return (
-    <div className="p-4 max-w-3xl mx-auto mb-16">
+    <div className={`p-4 max-w-3xl mx-auto mb-16 ${
+          theme === "light"
+            ? "bg-white"
+            : "bg-gray-800"
+        }`}>
       <h3
         className={`font-semibold text-xl mb-4 ${
           theme === "light"

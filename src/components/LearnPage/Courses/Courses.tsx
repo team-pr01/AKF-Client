@@ -29,7 +29,7 @@ const Courses = () => {
             className={`rounded-lg overflow-hidden shadow-lg transition-all hover:shadow-brand-orange/30 dark:hover:shadow-brand-yellow/30 transform hover:-translate-y-1 duration-300 ${
               theme === "light"
                 ? "bg-light-surface"
-                : "bg-dark-card animate-soft-breathing-shadow"
+                : "bg-gray-900 animate-soft-breathing-shadow"
             }`}
             style={
               {

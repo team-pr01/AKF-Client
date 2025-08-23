@@ -24,7 +24,7 @@ const Navbar = () => {
     return () => clearInterval(timerId);
   }, []);
   return (
-    <div>
+    <div className="sticky top-0 z-50">
       <header className="bg-light-surface dark:bg-primary px-4 py-3 flex justify-between items-center sticky top-0 z-50 shadow-md border-b border-gray-200 dark:border-gray-700/30">
         <div className="relative">
           <button

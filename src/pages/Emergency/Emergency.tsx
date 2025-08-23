@@ -5,7 +5,6 @@ import {
   MapPinIcon,
 } from '../../constants';
 import { useTheme } from '../../contexts/ThemeContext';
-import PageHeader from '../../components/Reusable/PageHeader/PageHeader';
 import SendEmergencyMessageForm from '../../components/EmergencyPage/SendEmergencyMessageForm/SendEmergencyMessageForm';
 
 
@@ -20,9 +19,8 @@ const Emergency = () => {
 
   return (
     <div 
-      className={`min-h-screen font-sans pb-20 ${theme === 'light' ? 'bg-red-50 text-red-800' : 'text-white bg-black dark:bg-gradient-to-br from-red-900 via-black to-black'}`}
+      className={`min-h-screen font-sans pb-20 pt-3 ${theme === 'light' ? 'bg-red-50 text-red-800' : 'text-white bg-gray-800 dark:bg-gradient-to-br from-red-900 via-black to-black'}`}
     >
-      <PageHeader title="Emergency Help" />
 
       <div className="p-4 flex flex-col gap-8">
        <SendEmergencyMessageForm/>

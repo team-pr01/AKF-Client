@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { forwardRef } from "react";
 import type { FieldError, FieldErrorsImpl, Merge } from "react-hook-form";
+import { useTheme } from "../../../contexts/ThemeContext";
 
 interface TextInputProps {
   label?: string;
@@ -32,6 +33,7 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
     },
     ref
   ) => {
+    const { theme } = useTheme();
     return (
       <div className="flex flex-col gap-2 font-Inter w-full">
         {label && (
@@ -51,6 +53,10 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
           ref={ref}
           disabled={isDisabled}
           className={`px-[18px] py-[14px] rounded-lg border focus:outline-none focus:border-brand-orange transition duration-300 ${
+          theme === "light"
+            ? "text-gray-600"
+            : "text-gray-800"
+        } ${
             isDisabled ? "bg-neutral-200/50" : "bg-neutral-50"
           } ${error ? "border-red-500" : "border-neutral-400"}`}
           {...rest}

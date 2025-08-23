@@ -128,7 +128,11 @@ const HamburgerMenu = ({
 
           {/* Navigation Links */}
           <nav className="flex-grow p-4 space-y-2">
-            <Link to={"/my-profile"} className={navItemClass}>
+            <Link
+              to={"/my-profile"}
+              onClick={() => setHamburgerMenuOpen(false)}
+              className={navItemClass}
+            >
               <UserProfileIcon
                 className={`w-5 h-5 ${
                   theme === "light"
@@ -138,7 +142,11 @@ const HamburgerMenu = ({
               />{" "}
               My Profile
             </Link>
-            <Link to={"/settings"} className={navItemClass}>
+            <Link
+              to={"/settings"}
+              onClick={() => setHamburgerMenuOpen(false)}
+              className={navItemClass}
+            >
               <SettingsIcon
                 className={`w-5 h-5 ${
                   theme === "light"
@@ -164,7 +172,11 @@ const HamburgerMenu = ({
               />{" "}
               Membership
             </button> */}
-            <Link to={"/emergency-support"} className={navItemClass}>
+            <Link
+              to={"/emergency"}
+              onClick={() => setHamburgerMenuOpen(false)}
+              className={navItemClass}
+            >
               <HelpCircleIcon
                 className={`w-5 h-5 ${
                   theme === "light"
