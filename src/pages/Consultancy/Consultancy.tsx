@@ -27,7 +27,11 @@ const Consultancy = () => {
   );
 
   return (
-    <div className="min-h-screen bg-light-primary dark:bg-primary text-light-text-primary dark:text-dark-text-primary font-sans pb-20">
+    <div className={`min-h-screen font-sans pb-16 ${
+            theme === "light"
+              ? "bg-light-primary text-light-text-primary"
+              : "bg-primary text-dark-text-primary"
+          }`}>
       <PageHeader title={"Consultancy Services"} />
 
       <div

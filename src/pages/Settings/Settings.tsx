@@ -48,24 +48,45 @@ const Settings = () => {
   }> = ({ icon, label, value, onClick, isToggle, toggleValue, onToggle }) => (
     <button
       onClick={onClick}
-      className={`w-full flex items-center justify-between p-3.5 sm:p-4 bg-light-surface dark:bg-dark-surface-alt hover:bg-gray-200 dark:hover:bg-gray-700/70 rounded-lg transition-colors text-left ${
+      className={`w-full flex items-center justify-between p-3.5 sm:p-4 rounded-lg transition-colors text-left ${
         onClick ? "cursor-pointer" : "cursor-default"
+      } ${
+        theme === "light"
+          ? "bg-light-surface hover:bg-gray-200"
+          : "bg-dark-surface-alt hover:bg-gray-700/70"
       }`}
       disabled={!onClick && !isToggle}
       aria-label={label}
     >
+      {/* Left side */}
       <div className="flex items-center gap-3">
         {React.cloneElement(icon, { className: "w-5 h-5 text-brand-orange" })}
-        <span className="text-sm sm:text-base text-light-text-primary dark:text-dark-text-primary">
+        <span
+          className={`text-sm sm:text-base ${
+            theme === "light"
+              ? "text-light-text-primary"
+              : "text-dark-text-primary"
+          }`}
+        >
           {label}
         </span>
       </div>
+
+      {/* Right side */}
       <div className="flex items-center gap-2">
         {value && (
-          <span className="text-sm text-light-text-secondary dark:text-dark-text-secondary truncate max-w-[100px] sm:max-w-[150px]">
+          <span
+            className={`text-sm truncate max-w-[100px] sm:max-w-[150px] ${
+              theme === "light"
+                ? "text-light-text-secondary"
+                : "text-dark-text-secondary"
+            }`}
+          >
             {value}
           </span>
         )}
+
+        {/* Toggle */}
         {isToggle && onToggle && (
           <label
             htmlFor={`toggle-${label.replace(/\s+/g, "-")}`}
@@ -78,20 +99,43 @@ const Settings = () => {
               checked={toggleValue}
               onChange={(e) => onToggle(e.target.checked)}
             />
-            <div className="w-11 h-6 bg-gray-300 dark:bg-gray-600 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-brand-orange rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 dark:after:border-gray-500 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-orange"></div>
+            <div
+              className={`w-11 h-6 rounded-full peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-brand-orange 
+              peer peer-checked:after:translate-x-full peer-checked:after:border-white 
+              after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white 
+              after:rounded-full after:h-5 after:w-5 after:transition-all 
+              ${
+                theme === "light"
+                  ? "bg-gray-300 after:border-gray-300"
+                  : "bg-gray-600 after:border-gray-500"
+              } 
+              peer-checked:bg-brand-orange`}
+            ></div>
           </label>
         )}
+
+        {/* Chevron */}
         {onClick && !isToggle && (
-          <ChevronRightIcon className="w-5 h-5 text-gray-400 dark:text-gray-500" />
+          <ChevronRightIcon
+            className={`w-5 h-5 ${
+              theme === "light" ? "text-gray-400" : "text-gray-500"
+            }`}
+          />
         )}
       </div>
     </button>
   );
 
   return (
-    <div className="min-h-screen bg-light-primary dark:bg-black text-light-text-primary dark:text-white font-sans">
+    <div
+      className={`min-h-screen font-sans ${
+        theme === "light"
+          ? "bg-light-primary text-light-text-primary"
+          : "bg-primary text-dark-text-primary"
+      }`}
+    >
       <PageHeader title="Settings" />
-      <main className="p-4 space-y-6 pb-20">
+      <main className="p-4">
         <section>
           <h2 className="text-xs font-semibold text-light-text-tertiary dark:text-gray-500 uppercase mb-2 px-1">
             General

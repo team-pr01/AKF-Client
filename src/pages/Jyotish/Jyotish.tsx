@@ -56,10 +56,14 @@ const Jyotish = () => {
     },
   ];
   return (
-    <div className="min-h-screen bg-light-primary dark:bg-primary text-light-text-primary dark:text-dark-text-primary font-sans pb-20">
+    <div className={`min-h-screen font-sans ${
+            theme === "light"
+              ? "bg-light-primary text-light-text-primary"
+              : "bg-primary text-dark-text-primary"
+          }`}>
       <PageHeader title={"Jyotish & Astrology"} />
 
-      <main className="pt-4">
+      <main>
         <section className="p-4">
           <div
             className={`rounded-xl p-5 sm:p-6 shadow-xl ${

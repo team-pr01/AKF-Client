@@ -9,7 +9,11 @@ const OurProjects = () => {
     useGetAllDonationProgramsQuery({});
 
   return (
-    <section className="px-4 py-2 bg-light-primary dark:bg-primary mb-20">
+    <section className={`px-4 py-2 pb-24 ${
+        theme === "light"
+          ? "bg-light-primary text-light-text-primary"
+          : "bg-primary text-dark-text-primary"
+      }`}>
       <h2 className="text-xl font-semibold dark:text-dark-text-primary mb-3 text-gradient bg-gradient-to-r from-brand-blue to-emerald-500 bg-clip-text text-transparent">
         Our Projects
       </h2>
@@ -53,7 +57,7 @@ const OurProjects = () => {
               aria-labelledby={`project-title-${item.id}`}
             >
               <div
-                className={`relative h-44 sm:h-52 rounded-lg overflow-hidden shadow-xl group-hover:shadow-2xl group-hover:shadow-brand-orange/40 dark:group-hover:shadow-brand-yellow/40 animate-soft-breathing-shadow bg-light-surface dark:bg-dark-card border-2 border-transparent group-hover:border-brand-orange/50 transition-all duration-300`}
+                className={`relative h-44 sm:h-52 rounded-lg overflow-hidden shadow-xl group-hover:shadow-2xl group-hover:shadow-brand-orange/40 dark:group-hover:shadow-brand-yellow/40 animate-soft-breathing-shadow bg-light-surface dark:bg-dark-card  transition-all duration-300`}
                 style={
                   {
                     animationDelay: `${index * 0.2}s`,

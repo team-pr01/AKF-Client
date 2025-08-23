@@ -7,7 +7,11 @@ const Books = () => {
 const { data: bookData, isLoading: isBooksLoading } = useGetAllBooksQuery({});
 
   return (
-    <section className="px-4 py-2 bg-light-primary dark:bg-primary">
+    <section className={`px-4 py-2 ${
+        theme === "light"
+          ? "bg-light-primary text-light-text-primary"
+          : "bg-primary text-dark-text-primary"
+      }`}>
       <h2 className="text-xl font-semibold dark:text-dark-text-primary mb-3 text-gradient bg-gradient-to-r from-brand-orange to-brand-yellow bg-clip-text text-transparent">
         Sacred Texts
       </h2>

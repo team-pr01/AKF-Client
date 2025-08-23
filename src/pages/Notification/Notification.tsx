@@ -57,7 +57,11 @@ const Notification = () => {
   }, [allPushNotifications?.data]);
 
   return (
-    <div>
+    <div className={`${
+            theme === "light"
+              ? "bg-light-primary text-light-text-primary"
+              : "bg-primary text-dark-text-primary"
+          }`}>
       <PageHeader title={`Notifications `} />
       <div className="flex flex-col gap-4 mb-20 p-4">
         {isLoading ? (

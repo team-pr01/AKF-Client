@@ -61,7 +61,11 @@ const MyProfile = () => {
   );
 
   return (
-    <div className="min-h-screen bg-light-primary dark:bg-primary text-light-text-primary dark:text-dark-text-primary font-sans">
+    <div className={`min-h-screen font-sans ${
+            theme === "light"
+              ? "bg-light-primary text-light-text-primary"
+              : "bg-primary text-dark-text-primary"
+          }`}>
       <PageHeader title="My Profile" />
       <main className="p-4 space-y-6 pb-20">
         <section

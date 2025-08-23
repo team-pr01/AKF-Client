@@ -7,8 +7,10 @@ import SearchBar from "../../components/HomePage/Searchbar/SearchBar";
 import WelcomePopupModal from "../../components/HomePage/WelcomePopupModal";
 import { useLocation } from "react-router-dom";
 import { useGetAllPopupsQuery } from "../../redux/Features/Popup/popupApi";
+import { useTheme } from "../../contexts/ThemeContext";
 
 const Home = () => {
+  const { theme } = useTheme();
   // For popup modal
   const { data, isLoading } = useGetAllPopupsQuery({});
   const location = useLocation();
@@ -41,9 +43,21 @@ const Home = () => {
     };
   }, [location, hasShownWelcomePopup, isWelcomePopupOpen]);
   return (
-    <div>
+    <div
+      className={`min-h-screen font-sans ${
+        theme === "light"
+          ? "bg-light-primary text-light-text-primary"
+          : "bg-primary text-dark-text-primary"
+      }`}
+    >
       <Hero />
-      <div className="px-4 py-3 bg-light-primary dark:bg-primary">
+      <div
+        className={`px-4 py-3 ${
+          theme === "light"
+            ? "bg-light-primary text-light-text-primary"
+            : "bg-primary text-dark-text-primary"
+        }`}
+      >
         <SearchBar />
       </div>
       <PageIconLinks />

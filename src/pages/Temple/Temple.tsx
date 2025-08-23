@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import PageHeader from "../../components/Reusable/PageHeader/PageHeader";
 import { LandmarkIcon, PlusIcon, SearchLucideIcon } from "../../constants";

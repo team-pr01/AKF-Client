@@ -6,6 +6,7 @@ import {
   XCircleIcon,
   StopCircleIcon,
 } from "../../../constants";
+import { useTheme } from "../../../contexts/ThemeContext";
 
 const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -61,8 +62,16 @@ const SearchBar = () => {
     }
   };
 
+  const { theme } = useTheme();
+
   return (
-    <div className="bg-light-surface rounded-lg p-1 flex items-center shadow-lg mx-auto max-w-2xl animate-multicolor-glow">
+    <div
+      className={`rounded-lg p-1 flex items-center shadow-lg mx-auto max-w-2xl animate-multicolor-glow ${
+        theme === "light"
+          ? "bg-light-primary text-light-text-primary"
+          : "bg-primary text-dark-text-primary"
+      }`}
+    >
       <input
         type="text"
         placeholder={"Search Vedic wisdom, temples..."}
