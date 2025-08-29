@@ -1,6 +1,6 @@
 import React from "react";
 import {
-  AkfPlaceholderIcon,
+  // AkfPlaceholderIcon,
   EmergencyIcon,
   LearnIcon,
   NewsIcon,
@@ -8,6 +8,7 @@ import {
 import { Link, useLocation } from "react-router-dom";
 import { MessageCircle } from "lucide-react";
 import { useTheme } from "../../../contexts/ThemeContext";
+import logo from "../../../assets/vedic-app-logo.svg"
 
 const BottomNavbar = () => {
   const { theme } = useTheme();
@@ -16,7 +17,7 @@ const BottomNavbar = () => {
   const navItems = [
     { path: "/learn", name: "Learn", icon: <LearnIcon /> },
     { path: "/ai-chat", name: "AI Chat", icon: <MessageCircle /> },
-    { path: "/", name: "Home", icon: <AkfPlaceholderIcon /> },
+    { path: "/", name: "Home", image: logo },
     { path: "/news", name: "News", icon: <NewsIcon /> },
     { path: "/emergency", name: "Emergency", icon: <EmergencyIcon /> },
   ];
@@ -59,7 +60,7 @@ const BottomNavbar = () => {
                   className="flex flex-col items-center justify-center text-center -mt-6 group transition-all duration-300"
                 >
                   <div
-                    className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-105 ${
+                    className={`size-14 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-105 ${
                       isActive
                         ? theme === "light"
                           ? "animate-akf-active-pulse bg-gradient-to-br from-brand-orange to-orange-600"
@@ -69,7 +70,11 @@ const BottomNavbar = () => {
                         : "bg-gradient-to-br from-brand-blue to-teal-500"
                     }`}
                   >
-                    {React.cloneElement(item.icon, { className: "w-8 h-8 text-white" })}
+                    { item?.icon && React.cloneElement(item.icon, { className: "w-8 h-8 text-white" })}
+                    {
+                      item.image &&
+                      <img src={item.image} alt="rounded-full" />
+                    }
                   </div>
                   <span className={`text-xs mt-1 transition-colors ${textColorClass}`}>
                     {item.name}
@@ -86,7 +91,7 @@ const BottomNavbar = () => {
                 className={`flex flex-col items-center justify-center text-center p-1 flex-1 group transition-all duration-200 ease-in-out rounded-md transform hover:scale-105 ${hoverBgClass}`}
               >
                 <div className={`mb-0.5 transition-colors ${iconColorClass} ${isActive && !isEmergency ? "animate-subtle-beat" : ""}`}>
-                  {React.cloneElement(item.icon, { className: "w-5 h-5" })}
+                  {item.icon && React.cloneElement(item.icon, { className: "w-5 h-5" })}
                 </div>
                 <span className={`text-xs transition-colors ${textColorClass}`}>{item.name}</span>
               </button>

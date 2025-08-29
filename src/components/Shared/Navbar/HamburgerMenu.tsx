@@ -10,6 +10,7 @@ import {
 import { useTheme } from "../../../contexts/ThemeContext";
 import { logout, useCurrentUser } from "../../../redux/Features/Auth/authSlice";
 import { Link, useNavigate } from "react-router-dom";
+import { LogIn } from "lucide-react";
 
 const HamburgerMenu = ({
   isHamburgerMenuOpen,
@@ -194,7 +195,9 @@ const HamburgerMenu = ({
               theme === "light" ? "border-gray-200" : "border-gray-700"
             }`}
           >
-            <button
+            {
+              user ?
+              <button
               onClick={() => {
                 handleLogout();
                 setHamburgerMenuOpen(false);
@@ -208,6 +211,19 @@ const HamburgerMenu = ({
             >
               <LogOutIcon className="w-5 h-5" /> Logout
             </button>
+            :
+            <Link
+              to={"/auth/login"}
+              className={`w-full text-left px-3 py-3 text-sm rounded-md flex items-center gap-3 transition-colors
+                          ${
+                            theme === "light"
+                              ? "text-red-500 hover:bg-red-500/10 hover:text-red-600"
+                              : "text-red-400 hover:bg-red-500/20 hover:text-red-300"
+                          }`}
+            >
+              <LogIn className="w-5 h-5" /> Login
+            </Link>
+            }
           </div>
         </div>
       </div>
