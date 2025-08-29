@@ -79,7 +79,7 @@ const BottomNavbar = () => {
                   <span className={`text-xs mt-1 transition-colors ${textColorClass}`}>
                     {item.name}
                   </span>
-                </button>
+                </button> 
               </Link>
             );
           }
