@@ -8,7 +8,7 @@ import {
 import { Link, useLocation } from "react-router-dom";
 import { MessageCircle } from "lucide-react";
 import { useTheme } from "../../../contexts/ThemeContext";
-import logo from "../../../assets/vedic-app-logo.svg"
+import logo from "../../../assets/logo.png"
 
 const BottomNavbar = () => {
   const { theme } = useTheme();
@@ -60,7 +60,7 @@ const BottomNavbar = () => {
                   className="flex flex-col items-center justify-center text-center -mt-6 group transition-all duration-300"
                 >
                   <div
-                    className={`size-14 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-105 ${
+                    className={`size-12 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-105 ${
                       isActive
                         ? theme === "light"
                           ? "animate-akf-active-pulse bg-gradient-to-br from-brand-orange to-orange-600"
@@ -73,7 +73,7 @@ const BottomNavbar = () => {
                     { item?.icon && React.cloneElement(item.icon, { className: "w-8 h-8 text-white" })}
                     {
                       item.image &&
-                      <img src={item.image} alt="rounded-full" />
+                      <img src={item.image} className="siz1 rounded-full" />
                     }
                   </div>
                   <span className={`text-xs mt-1 transition-colors ${textColorClass}`}>
