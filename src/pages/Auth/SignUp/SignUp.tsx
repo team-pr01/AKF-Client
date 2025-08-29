@@ -13,6 +13,7 @@ import PasswordInput from "../../../components/Reusable/PasswordInput/PasswordIn
 import { Link, useNavigate } from "react-router-dom";
 import { useSignupMutation } from "../../../redux/Features/Auth/authApi";
 import { toast } from "sonner";
+import { useTheme } from "../../../contexts/ThemeContext";
 
 type TFormData = {
   name: string;
@@ -30,6 +31,7 @@ type TFormData = {
 type SignupStep = 1 | 2;
 
 const SignUp = () => {
+  const { theme } = useTheme();
   const navigate = useNavigate();
   const [signup, { isLoading }] = useSignupMutation();
   const {
@@ -50,10 +52,7 @@ const SignUp = () => {
     try {
       setError("");
 
-      // Create FormData object
       const formData = new FormData();
-
-      // Append all form fields
       formData.append("name", data.name);
       formData.append("email", data.email);
       formData.append("phoneNumber", data.phoneNumber);
@@ -63,26 +62,18 @@ const SignUp = () => {
       formData.append("state", data.state);
       formData.append("city", data.city);
       if (data.area) formData.append("area", data.area);
-
-      // Append profile picture if exists
       if (data.file && data.file.length > 0) {
         formData.append("file", data.file[0]);
       }
 
-      // Call the signup mutation
       const response = await signup(formData).unwrap();
       if (response?.success) {
         toast.success("Signup success. Please login.");
         navigate("/auth/login");
       }
-
-      // Handle successful signup
-      console.log("Signup successful:", response);
       reset();
     } catch (err: any) {
-      // Handle error
       setError(err.data?.message || "Signup failed. Please try again.");
-      console.error("Signup error:", err);
     }
   };
 
@@ -98,7 +89,6 @@ const SignUp = () => {
     }
   };
 
-  // ✅ Watch required fields in Step 1
   const name = watch("name");
   const email = watch("email");
   const phoneNumber = watch("phoneNumber");
@@ -115,20 +105,39 @@ const SignUp = () => {
     !errors.password;
 
   return (
-    <div className="w-full max-w-md min-h-screen flex flex-col justify-center items-center px-4 py-3">
-      <h2 className="text-2xl font-bold text-center text-brand-orange mb-1">
+    <div
+      className={`w-full max-w-md min-h-screen flex flex-col justify-center items-center px-4 py-3 transition-colors duration-300
+        ${theme === "dark" ? "text-gray-200" : "text-gray-800"}`}
+    >
+      <h2
+        className={`text-2xl font-bold text-center mb-1 ${
+          theme === "dark" ? "text-brand-yellow" : "text-brand-orange"
+        }`}
+      >
         Create Your Account
       </h2>
-      <p className="text-center text-sm text-gray-400 mb-5">
+      <p
+        className={`text-center text-sm mb-5 ${
+          theme === "dark" ? "text-gray-400" : "text-gray-500"
+        }`}
+      >
         Join our community to explore Vedic wisdom.
       </p>
 
       {/* Progress Bar */}
       <div className="my-6 w-full">
-        <div className="flex justify-between text-xs text-gray-400 mb-1">
+        <div
+          className={`flex justify-between text-xs mb-1 ${
+            theme === "dark" ? "text-gray-400" : "text-gray-500"
+          }`}
+        >
           <span>Step {currentStep} of 2</span>
         </div>
-        <div className="w-full bg-neutral-400 rounded-full h-1.5">
+        <div
+          className={`w-full rounded-full h-1.5 ${
+            theme === "dark" ? "bg-gray-700" : "bg-neutral-400"
+          }`}
+        >
           <div
             className="bg-brand-orange h-1.5 rounded-full transition-all duration-300 ease-in-out"
             style={{ width: `${progressPercentage}%` }}
@@ -147,30 +156,33 @@ const SignUp = () => {
         {currentStep === 1 && (
           <>
             <div className="space-y-1">
-              <label className="block text-sm font-medium text-gray-800 dark:text-gray-300">
+              <label
+                className={`block text-sm font-medium ${
+                  theme === "dark" ? "text-gray-300" : "text-gray-800"
+                }`}
+              >
                 Profile Picture (Optional)
               </label>
-
-              {/* Hidden file input */}
               <input
                 type="file"
-                id="file" // Added ID
+                id="file"
                 accept="image/*"
                 className="hidden"
                 {...register("file")}
               />
-
-              {/* Custom button that triggers the file input */}
               <label
-                htmlFor="file" // Matches the input's ID
-                className="block w-full p-2 border border-dashed border-gray-400 rounded-lg text-gray-400 hover:border-brand-orange hover:text-brand-orange transition-colors cursor-pointer"
+                htmlFor="file"
+                className={`block w-full p-2 border border-dashed rounded-lg transition-colors cursor-pointer
+                  ${
+                    theme === "dark"
+                      ? "border-gray-600 text-gray-400 hover:border-brand-yellow hover:text-brand-yellow"
+                      : "border-gray-400 text-gray-400 hover:border-brand-orange hover:text-brand-orange"
+                  }`}
               >
                 {watch("file")?.length > 0
                   ? watch("file")[0].name
                   : "Click to upload image"}
               </label>
-
-              {/* Preview (optional) */}
               {watch("file")?.length > 0 && (
                 <div className="mt-2">
                   <img
@@ -180,9 +192,15 @@ const SignUp = () => {
                   />
                 </div>
               )}
-
-              <p className="text-xs text-gray-500">JPG, PNG (Max 2MB)</p>
+              <p
+                className={`text-xs ${
+                  theme === "dark" ? "text-gray-500" : "text-gray-400"
+                }`}
+              >
+                JPG, PNG (Max 2MB)
+              </p>
             </div>
+
             <TextInput
               label="Name"
               placeholder="Enter your name"
@@ -221,6 +239,7 @@ const SignUp = () => {
             />
           </>
         )}
+
         {currentStep === 2 && (
           <>
             <TextInput
@@ -251,12 +270,13 @@ const SignUp = () => {
           </>
         )}
 
+        {/* Step buttons */}
         <div className="pt-2 flex items-center gap-3">
           {currentStep > 1 && (
             <button
               type="button"
               onClick={handlePrevious}
-              className="flex-1 flex items-center justify-center gap-2 bg-gray-300 text-gray-700 hover:bg-opacity-90 p-3 rounded-lg shadow-md transition-colors duration-150 ease-in-out disabled:opacity-70"
+              className="flex-1 flex items-center justify-center gap-2 bg-gray-300 dark:bg-gray-700 dark:text-gray-200 text-gray-700 hover:bg-opacity-90 p-3 rounded-lg shadow-md transition-colors duration-150 ease-in-out disabled:opacity-70"
             >
               <ArrowLeftIcon className="w-4 h-4" />
               Previous
@@ -267,7 +287,7 @@ const SignUp = () => {
             <button
               type="button"
               onClick={handleNext}
-              disabled={!isStep1Valid} // ✅ disabled if step 1 is invalid
+              disabled={!isStep1Valid}
               className="flex-1 flex items-center justify-center gap-2 bg-brand-orange text-white hover:bg-opacity-90 p-3 rounded-lg shadow-md transition-colors duration-150 ease-in-out disabled:opacity-70"
             >
               Next <ArrowRightIcon className="w-4 h-4" />
@@ -288,11 +308,19 @@ const SignUp = () => {
         </div>
       </form>
 
-      <p className="mt-6 text-center text-sm text-gray-400">
+      <p
+        className={`mt-6 text-center text-sm ${
+          theme === "dark" ? "text-gray-400" : "text-gray-500"
+        }`}
+      >
         Already have an account?{" "}
         <Link
           to={"/auth/login"}
-          className="font-medium text-brand-orange hover:text-brand-yellow"
+          className={`font-medium ${
+            theme === "dark"
+              ? "text-brand-yellow hover:text-brand-orange"
+              : "text-brand-orange hover:text-brand-yellow"
+          }`}
         >
           Login
         </Link>

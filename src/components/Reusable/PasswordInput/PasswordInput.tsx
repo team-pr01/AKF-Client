@@ -2,6 +2,7 @@
 import { forwardRef } from "react";
 import type { FieldError, FieldErrorsImpl, Merge } from "react-hook-form";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
+import { useTheme } from "../../../contexts/ThemeContext";
 
 interface PasswordInputProps {
   label?: string;
@@ -33,6 +34,7 @@ const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
     },
     ref
   ) => {
+    const { theme } = useTheme();
 
     return (
       <div className="flex flex-col gap-2 font-Nunito w-full">
@@ -58,6 +60,10 @@ const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
             ref={ref}
             disabled={isDisabled}
              className={`w-full px-4 py-[14px] rounded-lg bg-white border leading-[18px] focus:outline-none focus:border-primary-10 transition duration-300 ${
+          theme === "light"
+            ? "text-gray-600"
+            : "text-gray-800"
+        } ${
             error ? "border-red-500" : "border-neutral-400"
           }`}
             {...rest}
