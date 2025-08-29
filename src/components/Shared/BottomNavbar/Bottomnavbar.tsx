@@ -67,7 +67,7 @@ const BottomNavbar = () => {
                           : "animate-akf-active-pulse bg-gradient-to-br from-brand-orange to-orange-500"
                         : theme === "light"
                         ? "bg-gradient-to-br from-brand-blue to-teal-400"
-                        : "bg-gradient-to-br from-brand-blue to-teal-500"
+                      : "bg-gradient-to-br from-brand-blue to-teal-500"
                     }`}
                   >
                     { item?.icon && React.cloneElement(item.icon, { className: "w-8 h-8 text-white" })}
