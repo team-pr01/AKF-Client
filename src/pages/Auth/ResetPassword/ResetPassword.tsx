@@ -1,28 +1,49 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import PasswordInput from "../../../components/Reusable/PasswordInput/PasswordInput";
 import { CheckCircleIcon, LoaderIcon } from "../../../constants";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import TextInput from "../../../components/Reusable/TextInput/TextInput";
+import { toast } from "sonner";
+import { useResetPasswordMutation } from "../../../redux/Features/Auth/authApi";
 
 type TFormData = {
   password: string;
-  confirmPassword: string;
+  otp: string;
 };
 const ResetPassword = () => {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<TFormData>();
-  const passwordValue = watch("password");
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
-  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
-    useState<boolean>(false);
-  const isLoading = false;
+  const [resetPassword, { isLoading }] = useResetPasswordMutation();
 
   const handleResetpassword = async (data: TFormData) => {
-    console.log(data);
+    const storedEmail = localStorage.getItem("resetEmail");
+    if (!storedEmail) {
+      toast.error("Something went wrong. Please try to send email again.");
+      return;
+    }
+    const payload = {
+      email: storedEmail,
+      otp: data.otp,
+      newPassword: data.password,
+    };
+
+    try {
+      const res = await resetPassword(payload).unwrap();
+      if (res.success) {
+        toast.success("Password reset successfully.");
+        localStorage.removeItem("resetEmail");
+        navigate("/auth/login");
+      }
+    } catch (err: any) {
+      console.error("Reset failed", err);
+    }
   };
   return (
     <div className="w-full max-w-md min-h-screen flex flex-col justify-center items-center px-4 py-3">
@@ -37,6 +58,12 @@ const ResetPassword = () => {
         onSubmit={handleSubmit(handleResetpassword)}
         className="space-y-3 w-full mt-6"
       >
+        <TextInput
+          label="OTP"
+          placeholder="Enter OTP"
+          error={errors.otp}
+          {...register("otp")}
+        />
         <PasswordInput
           label="Password"
           placeholder="Must be at least 8 Characters"
@@ -51,18 +78,7 @@ const ResetPassword = () => {
           isPasswordVisible={isPasswordVisible}
           setIsPasswordVisible={setIsPasswordVisible}
         />
-        <PasswordInput
-          label="Confirm Password"
-          placeholder="Re-type your password"
-          error={errors.confirmPassword}
-          {...register("confirmPassword", {
-            required: "Confirm password is required",
-            validate: (value) =>
-              value === passwordValue || "Passwords do not match",
-          })}
-          isPasswordVisible={isConfirmPasswordVisible}
-          setIsPasswordVisible={setIsConfirmPasswordVisible}
-        />
+
         <button
           type="submit"
           className="w-full flex items-center justify-center gap-2 bg-brand-orange text-white hover:bg-opacity-90 p-3 rounded-lg shadow-md transition-colors duration-150 ease-in-out disabled:opacity-70"

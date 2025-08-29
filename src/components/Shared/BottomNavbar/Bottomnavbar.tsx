@@ -37,8 +37,8 @@ const BottomNavbar = () => {
               : "text-brand-yellow"
             : isEmergency
             ? theme === "light"
-              ? "text-yellow-500 group-hover:text-brand-orange"
-              : "text-yellow-400 group-hover:text-brand-yellow"
+              ? "text-red-500 group-hover:text-brand-orange"
+              : "text-red-400 group-hover:text-brand-yellow"
             : theme === "light"
             ? "text-gray-500 group-hover:text-brand-orange"
             : "text-gray-400 group-hover:text-brand-yellow";

@@ -1,22 +1,41 @@
-import { Link } from "react-router-dom";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Link, useNavigate } from "react-router-dom";
 import TextInput from "../../../components/Reusable/TextInput/TextInput";
 import { CheckCircleIcon, LoaderIcon } from "../../../constants";
 import { useForm } from "react-hook-form";
+import { useForgetPasswordMutation } from "../../../redux/Features/Auth/authApi";
+import { toast } from "sonner";
 
 type TFormData = {
   email: string;
 };
 
 const ForgotPassword = () => {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<TFormData>();
-  const isLoading = false;
 
-  const handleForgotPassword = async (data: TFormData) => {
-    console.log(data);
+  const [forgetPassword, { isLoading: isForgotPasswordLoading }] =
+    useForgetPasswordMutation();
+
+  const handleSubmitForgotPassword = async (data:TFormData) => {
+    try {
+      const payload = { email: data.email };
+      
+      const res = await forgetPassword(payload).unwrap();
+      localStorage.setItem("resetEmail", data.email);
+      if (res.success) {
+        toast.success("OTP has been sent to your email.");
+        reset();
+        navigate("/auth/reset-password");
+      }
+    } catch (err: any) {
+      console.error("Reset failed", err);
+    }
   };
   return (
     <div className="w-full max-w-md min-h-screen flex flex-col justify-center items-center px-4 py-3">
@@ -24,9 +43,13 @@ const ForgotPassword = () => {
         Forgot Your Password?
       </h2>
       <p className="text-center text-sm text-gray-400 mb-5">
-        Enter your registered email and we will send password reset instruction to your email.
+        Enter your registered email and we will send password reset instruction
+        to your email.
       </p>
-      <form onSubmit={handleSubmit(handleForgotPassword)} className="space-y-3 w-full mt-6">
+      <form
+        onSubmit={handleSubmit(handleSubmitForgotPassword)}
+        className="space-y-3 w-full mt-6"
+      >
         <TextInput
           label="Email"
           type="email"
@@ -38,7 +61,7 @@ const ForgotPassword = () => {
           type="submit"
           className="w-full flex items-center justify-center gap-2 bg-brand-orange text-white hover:bg-opacity-90 p-3 rounded-lg shadow-md transition-colors duration-150 ease-in-out disabled:opacity-70"
         >
-          {isLoading ? (
+          {isForgotPasswordLoading ? (
             <LoaderIcon className="w-5 h-5 animate-spin" />
           ) : (
             <CheckCircleIcon className="w-5 h-5" />

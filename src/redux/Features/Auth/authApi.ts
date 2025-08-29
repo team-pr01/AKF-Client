@@ -27,24 +27,22 @@ const authApi = baseApi.injectEndpoints({
       invalidatesTags: ["users"],
     }),
 
-    forgotPassword: builder.mutation({
-      query: (forgotPasswordData) => ({
-        url: "/auth/forgot-password",
-        method: "POST",
-        body: forgotPasswordData,
-        credentials: "include",
+    forgetPassword: builder.mutation({
+      query: (data) => ({
+        url: `/auth/forgot-password`,
+        method: 'POST',
+        body: data,
       }),
-      invalidatesTags: ["users"],
+      invalidatesTags: ['users'],
     }),
 
     resetPassword: builder.mutation({
-      query: ({ resetPasswordData, token }) => ({
-        url: `/auth/reset-password/${token}`,
-        method: "POST",
-        body: resetPasswordData,
-        credentials: "include",
+      query: (data) => ({
+        url: `/auth/reset-password`,
+        method: 'POST',
+        body: data,
       }),
-      invalidatesTags: ["users"],
+      invalidatesTags: ['users'],
     }),
 
     aiChat: builder.mutation({
@@ -70,7 +68,7 @@ const authApi = baseApi.injectEndpoints({
 export const {
   useLoginMutation,
   useSignupMutation,
-  useForgotPasswordMutation,
+  useForgetPasswordMutation,
   useResetPasswordMutation,
   useAiChatMutation,
   useGetAllPushNotificationForUserQuery,

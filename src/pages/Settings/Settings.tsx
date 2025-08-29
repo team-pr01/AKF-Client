@@ -7,7 +7,7 @@ import {
   LogOutIcon,
   UserProfileIcon as AccountIcon,
   PaletteIcon,
-  UsersIcon,
+  // UsersIcon,
   XIcon,
   SearchLucideIcon,
 } from "../../constants";
@@ -23,7 +23,7 @@ const Settings = () => {
   const user = useSelector(useCurrentUser) as any;
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [communityUpdates, setCommunityUpdates] = useState(true);
+  // const [communityUpdates, setCommunityUpdates] = useState(true);
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [languageSearchTerm, setLanguageSearchTerm] = useState("");
 
@@ -157,7 +157,7 @@ const Settings = () => {
           </div>
         </section>
 
-        <section>
+        {/* <section>
           <h2 className="text-xs font-semibold text-light-text-tertiary dark:text-gray-500 uppercase mb-2 px-1">
             Notifications
           </h2>
@@ -170,9 +170,9 @@ const Settings = () => {
               onToggle={setCommunityUpdates}
             />
           </div>
-        </section>
+        </section> */}
 
-        <section>
+        <section className="mt-2">
           <h2 className="text-xs font-semibold text-light-text-tertiary dark:text-gray-500 uppercase mb-2 px-1">
             Account
           </h2>
@@ -190,7 +190,7 @@ const Settings = () => {
           </div>
         </section>
 
-        <section>
+        <section className="mt-2">
           <h2 className="text-xs font-semibold text-light-text-tertiary dark:text-gray-500 uppercase mb-2 px-1">
             About
           </h2>

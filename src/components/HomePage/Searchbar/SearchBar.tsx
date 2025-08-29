@@ -2,16 +2,20 @@ import { useState, useEffect, useRef } from "react";
 import {
   SearchIcon,
   MicrophoneIcon,
-  AdjustmentsHorizontalIcon,
   XCircleIcon,
   StopCircleIcon,
 } from "../../../constants";
 import { useTheme } from "../../../contexts/ThemeContext";
+import { useNavigate } from "react-router-dom";
 
 const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isListening, setIsListening] = useState(false);
+  const [filteredPages, setFilteredPages] = useState<
+    { label: string; path: string }[]
+  >([]);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const SpeechRecognitionAPI =
@@ -64,58 +68,105 @@ const SearchBar = () => {
 
   const { theme } = useTheme();
 
+  const pageLinks = [
+    { label: "Yoga", path: "/yoga" },
+    { label: "Temples", path: "/temples" },
+    { label: "Sanatan Sthal", path: "/temples" },
+    { label: "Food", path: "/food" },
+    { label: "Vastu", path: "/vastu" },
+    { label: "Jyotish", path: "/jyotish" },
+    { label: "News", path: "/news" },
+    { label: "Emergency", path: "/emergency" },
+    { label: "Learn", path: "/learn" },
+    { label: "Reels", path: "/reels" },
+    { label: "Course", path: "/course" },
+    { label: "Quiz", path: "/quiz" },
+    { label: "AI Chat", path: "/ai-chat" },
+    { label: "Notifications", path: "/notifications" },
+    { label: "My Profile", path: "/my-profile" },
+  ];
+
+  // filter pages whenever searchTerm changes
+  useEffect(() => {
+    if (searchTerm.trim()) {
+      const matches = pageLinks.filter((page) =>
+        page.label.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredPages(matches);
+    } else {
+      setFilteredPages([]);
+    }
+  }, [searchTerm]);
+
   return (
-    <div
-      className={`rounded-lg p-1 flex items-center shadow-lg mx-auto max-w-2xl animate-multicolor-glow ${
-        theme === "light"
-          ? "bg-light-primary text-light-text-primary"
-          : "bg-primary text-dark-text-primary"
-      }`}
-    >
-      <input
-        type="text"
-        placeholder={"Search Vedic wisdom, temples..."}
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        className="flex-grow p-3 bg-transparent text-light-text-primary placeholder-light-text-tertiary focus:outline-none text-sm"
-        aria-label="Search"
-      />
-      {searchTerm && (
+    <div className="relative w-full max-w-2xl mx-auto">
+      {/* Search Bar */}
+      <div
+        className={`rounded-lg p-1 flex items-center shadow-lg animate-multicolor-glow ${
+          theme === "light"
+            ? "bg-light-primary text-light-text-primary"
+            : "bg-primary text-dark-text-primary"
+        }`}
+      >
+        <input
+          type="text"
+          placeholder={"Search Vedic wisdom, temples..."}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="flex-grow p-3 bg-transparent text-light-text-primary placeholder-light-text-tertiary focus:outline-none text-sm"
+          aria-label="Search"
+        />
+        {searchTerm && (
+          <button
+            aria-label="Clear search"
+            onClick={() => setSearchTerm("")}
+            className="p-2 text-gray-500 hover:text-brand-orange"
+          >
+            <XCircleIcon className="w-5 h-5" />
+          </button>
+        )}
         <button
-          aria-label="Clear search"
+          onClick={handleVoiceSearchToggle}
+          aria-label={isListening ? "Stop voice search" : "Search by voice"}
+          className={`p-2 rounded-full transition-colors ${
+            isListening
+              ? "text-red-500 animate-pulse"
+              : "text-gray-500 hover:text-brand-orange"
+          }`}
+          disabled={!recognitionRef.current && !isListening}
+        >
+          {isListening ? (
+            <StopCircleIcon className="w-5 h-5" />
+          ) : (
+            <MicrophoneIcon className="w-5 h-5" />
+          )}
+        </button>
+        <button
+          aria-label="Submit search"
           className="p-2 text-gray-500 hover:text-brand-orange"
         >
-          <XCircleIcon className="w-5 h-5" />
+          <SearchIcon className="w-5 h-5" />
         </button>
+      </div>
+
+      {/* Dropdown suggestions */}
+      {filteredPages.length > 0 && (
+        <ul className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+          {filteredPages.map((page, idx) => (
+            <li
+              key={idx}
+              onClick={() => {
+                navigate(page.path);
+                setSearchTerm("");
+                setFilteredPages([]);
+              }}
+              className="px-4 py-2 text-sm text-gray-700 cursor-pointer hover:bg-gray-100"
+            >
+              {page.label}
+            </li>
+          ))}
+        </ul>
       )}
-      <button
-        onClick={handleVoiceSearchToggle}
-        aria-label={isListening ? "Stop voice search" : "Search by voice"}
-        className={`p-2 rounded-full transition-colors ${
-          isListening
-            ? "text-red-500 animate-pulse"
-            : "text-gray-500 hover:text-brand-orange"
-        }`}
-        disabled={!recognitionRef.current && !isListening}
-      >
-        {isListening ? (
-          <StopCircleIcon className="w-5 h-5" />
-        ) : (
-          <MicrophoneIcon className="w-5 h-5" />
-        )}
-      </button>
-      <button
-        aria-label="Submit search"
-        className="p-2 text-gray-500 hover:text-brand-orange"
-      >
-        <SearchIcon className="w-5 h-5" />
-      </button>
-      <button
-        aria-label="Filter search results"
-        className="p-2 text-gray-500 hover:text-brand-orange"
-      >
-        <AdjustmentsHorizontalIcon className="w-5 h-5" />
-      </button>
     </div>
   );
 };
