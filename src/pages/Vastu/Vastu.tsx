@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import PageHeader from "../../components/Reusable/PageHeader/PageHeader";
 import { useTheme } from "../../contexts/ThemeContext";
 import {
-  ArrowRightIcon,
   BathIcon,
   BedIcon,
   DoorOpenIcon,
@@ -17,6 +16,7 @@ import { getEmbedUrl } from "../../utils/getEmbedUrl";
 import Loader from "../../components/Shared/Loader/Loader";
 import Experts from "../../components/Reusable/Experts/Experts";
 import { useGetAllConsultancyServicesQuery } from "../../redux/Features/ConsultancyService/consultancyServiceApi";
+import { useGetAllVastuTipsQuery } from "../../redux/Features/Vastu/vastuTipsApi";
 
 export type TVastu = {
   _id: string;
@@ -44,6 +44,9 @@ const Vastu = () => {
     data?.data?.filter((expert: any) => expert.category === "Vastu Expert") ||
     [];
 
+  const { data: vastuTips, isLoading: isVastuTipsLoading } =
+    useGetAllVastuTipsQuery({});
+
   const vastuCategories = [
     { id: "", name: "All", icon: <DoorOpenIcon /> },
     { id: "entrance", name: "Entrance", icon: <DoorOpenIcon /> },
@@ -54,70 +57,14 @@ const Vastu = () => {
     { id: "garden", name: "Garden", icon: <Plant2Icon /> },
   ];
 
-  const initialVastuTips = [
-    {
-      title: "Main Entrance",
-      icon: <DoorOpenIcon />,
-      category: "entrance",
-      tips: [
-        "North-East entrance is considered most auspicious for overall prosperity.",
-        "Avoid obstructions like poles or large trees directly in front of the main door.",
-        "The entrance door should always open inward, clockwise.",
-        "Keep the entrance area well-lit and clean.",
-      ],
-    },
-    {
-      title: "Bedroom",
-      icon: <BedIcon />,
-      category: "bedroom",
-      tips: [
-        "Master bedroom should ideally be in the South-West direction.",
-        "Sleep with your head pointing South or East for peaceful sleep.",
-        "Avoid placing mirrors directly opposite the bed.",
-        "Use calming colors for bedroom walls.",
-      ],
-    },
-    {
-      title: "Kitchen",
-      icon: <KitchenIcon />,
-      category: "kitchen",
-      tips: [
-        "The South-East corner is ideal for the kitchen (Agni corner).",
-        "Cooking stove should be placed such that the cook faces East.",
-        "Water source (sink, tap) should be in the North-East of the kitchen.",
-        "Avoid placing the stove and sink directly opposite each other.",
-      ],
-    },
-    {
-      title: "Bathroom & Toilet",
-      icon: <BathIcon />,
-      category: "bathroom",
-      tips: [
-        "North-West is the preferred direction for bathrooms and toilets.",
-        "Toilet seat should ideally face South or North.",
-        "Ensure good ventilation and keep the bathroom door closed when not in use.",
-        "Avoid constructing toilets in the North-East or South-West corners.",
-      ],
-    },
-    {
-      title: "Temple Room (Pooja Room)",
-      icon: <TempleIcon />,
-      category: "temple",
-      tips: [
-        "The North-East (Ishan Kona) is the most sacred direction for a pooja room.",
-        "Idols should face West or East.",
-        "Keep the pooja room clean, clutter-free, and well-lit.",
-        "Avoid placing the pooja room under a staircase or next to a bathroom.",
-      ],
-    },
-  ];
-
   return (
-    <div className={`min-h-screen font-sans pb-20 ${
+    <div
+      className={`min-h-screen font-sans pb-20 ${
         theme === "light"
           ? "bg-light-primary text-light-text-primary"
           : "bg-primary text-dark-text-primary"
-      }`}>
+      }`}
+    >
       <PageHeader title={"Vastu Shastra"} />
 
       <div
@@ -128,6 +75,7 @@ const Vastu = () => {
         }`}
       >
         <div className="flex gap-2">
+          {/* Search bar */}
           <div className="flex-1 relative">
             <SearchLucideIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-brand-orange" />
             <input
@@ -143,8 +91,9 @@ const Vastu = () => {
             />
           </div>
         </div>
+        {/* Categories */}
         <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4">
-          {vastuCategories.map((category) => (
+          {vastuCategories?.map((category) => (
             <button
               key={category.id}
               onClick={() => setSelectedCategory(category.id)}
@@ -174,6 +123,7 @@ const Vastu = () => {
       </div>
 
       <main className="p-4 pt-0 space-y-6">
+        {/* Videos */}
         <section>
           <h2
             className={`text-lg font-semibold mb-3 ${
@@ -234,6 +184,7 @@ const Vastu = () => {
           )}
         </section>
 
+        {/* Vastu tips */}
         <section>
           <h2
             className={`text-lg font-semibold mb-3 ${
@@ -244,9 +195,54 @@ const Vastu = () => {
           >
             Popular Vastu Tips
           </h2>
-          {initialVastuTips.length > 0 ? (
+          {isVastuTipsLoading ? (
+            // 🦴 Skeleton Loader
             <div className="space-y-3">
-              {initialVastuTips.map((tip, index) => (
+              {Array.from({ length: 4 }).map((_, index) => (
+                <div
+                  key={index}
+                  className={`rounded-lg shadow-md overflow-hidden animate-pulse ${
+                    theme === "light" ? "bg-gray-100" : "bg-gray-800"
+                  }`}
+                >
+                  {/* Summary skeleton */}
+                  <div className="flex items-center gap-3 p-3">
+                    <div
+                      className={`size-6 rounded-full ${
+                        theme === "light" ? "bg-gray-200" : "bg-gray-700"
+                      }`}
+                    ></div>
+                    <div
+                      className={`h-4 w-2/3 rounded ${
+                        theme === "light" ? "bg-gray-200" : "bg-gray-700"
+                      }`}
+                    ></div>
+                  </div>
+
+                  {/* Details skeleton */}
+                  <div
+                    className={`p-3 border-t space-y-2 ${
+                      theme === "light"
+                        ? "border-gray-200 bg-gray-50"
+                        : "border-gray-700 bg-gray-900"
+                    }`}
+                  >
+                    {Array.from({ length: 3 }).map((_, i) => (
+                      <div
+                        key={i}
+                        className={`h-3 w-full rounded ${
+                          theme === "light" ? "bg-gray-200" : "bg-gray-700"
+                        }`}
+                      ></div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : vastuTips?.data?.length > 0 ? (
+            // ✅ Actual data rendering
+            <div className="space-y-3">
+              {vastuTips?.data?.map((tip: any, index: number) => (
                 <details
                   key={index}
                   className={`rounded-lg shadow-md overflow-hidden ${
@@ -260,9 +256,7 @@ const Vastu = () => {
                         : "hover:bg-gray-700"
                     }`}
                   >
-                    {React.cloneElement(tip.icon, {
-                      className: `w-6 h-6 text-brand-orange`,
-                    })}
+                    <img src={tip?.imageUrl} alt="icon" className="size-6" />
                     <span
                       className={`font-medium text-sm ${
                         theme === "light"
@@ -270,9 +264,8 @@ const Vastu = () => {
                           : "text-dark-text-primary"
                       }`}
                     >
-                      {tip.title}
+                      {tip?.title}
                     </span>
-                    <ArrowRightIcon className="w-4 h-4 ml-auto transform transition-transform details-arrow" />
                   </summary>
                   <div
                     className={`p-3 border-t text-xs space-y-1.5 ${
@@ -281,7 +274,7 @@ const Vastu = () => {
                         : "border-gray-700 text-dark-text-secondary bg-dark-surface/50"
                     }`}
                   >
-                    {tip.tips.map((t, i) => (
+                    {tip?.tips.map((t: string, i: number) => (
                       <p key={i}>{t}</p>
                     ))}
                   </div>
@@ -289,6 +282,7 @@ const Vastu = () => {
               ))}
             </div>
           ) : (
+            // 🚫 No data
             <p
               className={`text-center py-6 text-sm ${
                 theme === "light"
