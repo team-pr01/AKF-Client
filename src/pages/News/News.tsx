@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PageHeader from "../../components/Reusable/PageHeader/PageHeader";
 import { useTheme } from "../../contexts/ThemeContext";
 import {
   CalendarIcon,
   FacebookIcon,
+  LanguagesIcon,
   Link2Icon,
   LinkedinIcon,
   SearchLucideIcon,
@@ -15,6 +16,8 @@ import { useGetAllNewsQuery } from "../../redux/Features/News/newsApi";
 import { useGetAllCategoriesQuery } from "../../redux/Features/Categories/ReelCategory/categoriesApi";
 import Loader from "../../components/Shared/Loader/Loader";
 import { formatDate } from "../../utils/formatDate";
+import { LANGUAGES } from "../../utils/allLanguages";
+import { X } from "lucide-react";
 
 const categoryGradients = [
   "from-blue-500 to-sky-500 dark:from-blue-600 dark:to-sky-600",
@@ -30,10 +33,49 @@ const News = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [selectedLang, setSelectedLang] = useState(LANGUAGES[0]);
+  const [translatedArticles, setTranslatedArticles] = useState([]);
   const { data, isLoading, isFetching } = useGetAllNewsQuery({
     category: selectedCategory,
     keyword: searchQuery,
   });
+
+  console.log(translatedArticles);
+
+  useEffect(() => {
+    const langCode = selectedLang?.code;
+    if (!data?.data || !langCode) {
+      setTranslatedArticles([]);
+      return;
+    }
+    console.log(langCode);
+    const filtered = data.data
+      .map((article: any) => {
+        let translations = article?.translations;
+        if (!translations) return null;
+
+        // 🔹 Convert array → object if needed
+        if (Array.isArray(translations)) {
+          translations = translations.reduce((acc: any, t: any) => {
+            if (t?.language) acc[t.language] = t;
+            return acc;
+          }, {});
+        }
+        const hasLang =
+          translations?.[langCode] ||
+          translations?.[langCode.toLowerCase?.()] ||
+          translations?.[langCode.toUpperCase?.()];
+
+        if (!hasLang) return null;
+
+        return { ...article, translated: hasLang };
+      })
+      .filter(Boolean); // remove nulls (articles without that language)
+
+    setTranslatedArticles(filtered);
+    console.log("✅ Translated articles:", filtered);
+  }, [data, selectedLang]);
 
   const { data: categoryData } = useGetAllCategoriesQuery({});
   const filteredCategory = categoryData?.data?.filter(
@@ -52,12 +94,19 @@ const News = () => {
     setIsArticleModalOpen(true);
   };
 
+  const handleSelect = (lang: { code: string; name: string }) => {
+    setSelectedLang(lang);
+    setShowModal(false);
+  };
+
   return (
-    <div className={`min-h-screen text-light-text-primary dark:text-dark-text-primary font-sans pb-20 ${
-          theme === "light"
-            ? "bg-white"
-            : "bg-gray-800 animate-soft-breathing-shadow"
-        }`}>
+    <div
+      className={`min-h-screen text-light-text-primary dark:text-dark-text-primary font-sans pb-20 ${
+        theme === "light"
+          ? "bg-white"
+          : "bg-gray-800 animate-soft-breathing-shadow"
+      }`}
+    >
       <PageHeader title={"News Feed"} />
 
       <div
@@ -68,20 +117,85 @@ const News = () => {
         }`}
       >
         <div className="flex flex-col sm:flex-row gap-3">
-          <div className="flex-1 relative">
-            <SearchLucideIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-brand-orange" />
-            <input
-              type="text"
-              placeholder="Search news..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className={`w-full pl-10 pr-4 py-3 rounded-lg outline-none text-light-text-primary dark:text-dark-text-primary placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary focus:ring-2 focus:ring-brand-orange transition-shadow focus:shadow-lg ${
-          theme === "light"
-            ? "bg-white"
-            : "bg-gray-800 animate-soft-breathing-shadow"
-        }`}
-            />
+          {/* Search & language */}
+          <div className="flex items-center gap-3 relative w-full">
+            {/* Search Input */}
+            <div className="flex-1 relative">
+              <SearchLucideIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-brand-orange" />
+              <input
+                type="text"
+                placeholder="Search news..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className={`w-full pl-10 pr-4 py-3 rounded-lg outline-none text-light-text-primary dark:text-dark-text-primary placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary focus:ring-2 focus:ring-brand-orange transition-shadow focus:shadow-lg ${
+                  theme === "light"
+                    ? "bg-white"
+                    : "bg-gray-800 animate-soft-breathing-shadow"
+                }`}
+              />
+            </div>
+
+            {/* Language Button */}
+            <button
+              onClick={() => setShowModal(true)}
+              className="flex items-center gap-1 px-3 py-2 rounded-lg bg-brand-orange text-white font-medium hover:opacity-90 transition"
+            >
+              <LanguagesIcon className="w-5 h-5" />
+              <span className="hidden sm:inline">
+                {selectedLang.code.toUpperCase()}
+              </span>
+            </button>
+
+            {/* Modal Overlay */}
+            {showModal && (
+              <div
+                className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity duration-300"
+                onClick={() => setShowModal(false)}
+              ></div>
+            )}
+
+            {/* Modal Content */}
+            <div
+              className={`fixed top-1/2 left-1/2 z-50 w-80 h-[70vh] overflow-y-auto p-4 rounded-2xl shadow-xl transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${
+                showModal
+                  ? "opacity-100 scale-100"
+                  : "opacity-0 scale-90 pointer-events-none"
+              } ${theme === "light" ? "bg-white" : "bg-gray-800"}`}
+            >
+              {/* Header with close button */}
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-lg font-semibold text-brand-orange">
+                  Choose Language
+                </h3>
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                >
+                  <X className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+                </button>
+              </div>
+
+              {/* Language list */}
+              <div className="space-y-2">
+                {LANGUAGES.map((lang) => (
+                  <button
+                    key={lang.code}
+                    onClick={() => handleSelect(lang)}
+                    className={`w-full py-2 px-3 rounded-lg text-left transition ${
+                      selectedLang.code === lang.code
+                        ? "bg-brand-orange text-white"
+                        : theme === "light"
+                        ? "hover:bg-gray-100"
+                        : "hover:bg-gray-700 text-gray-300"
+                    }`}
+                  >
+                    {lang.name}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
+          {/* Categories */}
           <div className="flex gap-2 overflow-x-auto scrollbar-hide -mx-4 px-4">
             <button
               onClick={() => setSelectedCategory("")}
@@ -119,12 +233,14 @@ const News = () => {
       </div>
 
       {/* mapping data */}
-      <div className={`p-4 space-y-4 pt-2 ${
+      <div
+        className={`p-4 space-y-4 pt-2 ${
           theme === "light"
             ? "bg-white"
             : "bg-gray-800 animate-soft-breathing-shadow"
-        }`}>
-        {data?.data?.length === 0 ? (
+        }`}
+      >
+        {translatedArticles?.length === 0 ? (
           <p
             className={`text-center py-6 text-sm ${
               theme === "light"
@@ -137,78 +253,88 @@ const News = () => {
         ) : isLoading || isFetching ? (
           <Loader />
         ) : (
-          data?.data?.map((item: any) => (
-            <div
-              key={item._id}
-              className={`rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl dark:hover:shadow-brand-yellow/20 hover:shadow-brand-orange/20 cursor-pointer transform hover:-translate-y-1 ${
-                theme === "light"
-                  ? "bg-light-surface"
-                  : "bg-dark-card animate-soft-breathing-shadow"
-              }`}
-              style={
-                {
-                  "--tw-shadow-color": "rgba(255,193,7,0.1)",
-                } as React.CSSProperties
-              }
-            >
-              <img
-                src={item.imageUrl}
-                alt={item.title}
-                className="w-full h-48 object-cover"
-                loading="lazy"
-              />
-              <div className="p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <div
-                    className={`text-xs bg-brand-blue px-2 py-1 rounded-3xl text-white`}
-                  >
-                    {item?.category}
-                  </div>
-                  <div
-                    className="flex items-center gap-1"
-                    title="Date published"
-                  >
-                    <CalendarIcon className="w-3.5 h-3.5" />
-                    <span>{formatDate(item.createdAt)}</span>
-                  </div>
-                </div>
-                <h2
-                  className={`text-lg font-semibold mb-2 ${
-                    theme === "light"
-                      ? "text-light-text-primary"
-                      : "text-dark-text-primary"
-                  }`}
-                >
-                  {item?.title}
-                </h2>
+          translatedArticles?.map((article: any) => {
+            const translated = article?.translations?.[selectedLang.code];
 
-                <p
-                  className={`text-sm line-clamp-3 ${
-                    theme === "light"
-                      ? "text-light-text-secondary"
-                      : "text-dark-text-secondary"
-                  }`}
-                >
-                  {item?.excerpt}
-                </p>
+            return (
+              <div
+                key={translated?._id}
+                className={`rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl dark:hover:shadow-brand-yellow/20 hover:shadow-brand-orange/20 cursor-pointer transform hover:-translate-y-1 ${
+                  theme === "light"
+                    ? "bg-light-surface"
+                    : "bg-dark-card animate-soft-breathing-shadow"
+                }`}
+                style={
+                  {
+                    "--tw-shadow-color": "rgba(255,193,7,0.1)",
+                  } as React.CSSProperties
+                }
+              >
+                <img
+                  src={article?.imageUrl}
+                  alt={translated?.title}
+                  className="w-full h-48 object-cover"
+                  loading="lazy"
+                />
+                <div className="p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <div
+                      className={`text-xs bg-brand-blue px-2 py-1 rounded-3xl text-white`}
+                    >
+                      {translated?.category}
+                    </div>
+                    <div
+                      className="flex items-center gap-1"
+                      title="Date published"
+                    >
+                      <CalendarIcon className="w-3.5 h-3.5" />
+                      <span>{formatDate(translated?.createdAt)}</span>
+                    </div>
+                  </div>
 
-                <div
-                  className={`flex items-center justify-end text-xs mt-4 pt-3 ${
-                    theme === "light"
-                      ? "text-light-text-tertiary border-t border-gray-200"
-                      : "text-dark-text-tertiary border-t border-gray-700"
-                  }`}
-                >
-                  <button
-                    onClick={() => handleOpenArticleModal(item)}
-                    className={`text-xs bg-brand-orange px-2 py-1 rounded text-white`}
+                  <h2
+                    className={`text-lg font-semibold mb-2 ${
+                      theme === "light"
+                        ? "text-light-text-primary"
+                        : "text-dark-text-primary"
+                    }`}
                   >
-                    See more
-                  </button>
+                    {translated?.title}
+                  </h2>
+
+                  <p
+                    className={`text-sm line-clamp-3 ${
+                      theme === "light"
+                        ? "text-light-text-secondary"
+                        : "text-dark-text-secondary"
+                    }`}
+                  >
+                    {translated?.excerpt}
+                  </p>
+
+                  <div
+                    className={`flex items-center justify-end text-xs mt-4 pt-3 ${
+                      theme === "light"
+                        ? "text-light-text-tertiary border-t border-gray-200"
+                        : "text-dark-text-tertiary border-t border-gray-700"
+                    }`}
+                  >
+                    <button
+                      onClick={() =>
+                        handleOpenArticleModal({
+                          ...translated,
+                          createdAt: article?.createdAt,
+                        })
+                      }
+                      className="text-xs bg-brand-orange px-2 py-1 rounded text-white"
+                    >
+                      See more
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
 
@@ -284,7 +410,7 @@ const News = () => {
           onClick={() => setIsArticleModalOpen(false)}
         >
           <div
-            className={`rounded-xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl animate-soft-breathing-shadow ${
+            className={`rounded-xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl animate-soft-breathing-shadow h-[70vh] overflow-y-auto ${
               theme === "light"
                 ? "bg-light-surface text-light-text-primary"
                 : "bg-dark-card text-dark-text-primary"
@@ -301,7 +427,7 @@ const News = () => {
             aria-labelledby="article-modal-title"
           >
             <div
-              className={`flex justify-between items-center p-4 border-b sticky top-0 rounded-t-xl ${
+              className={`flex justify-between items-center p-4 rounded-t-xl sticky top-0 ${
                 theme === "light"
                   ? "bg-light-surface border-gray-200"
                   : "bg-dark-card border-gray-700"
@@ -326,7 +452,7 @@ const News = () => {
               </button>
             </div>
             <div
-              className={`p-4 border-t flex flex-col sticky bottom-0 rounded-b-xl ${
+              className={`p-4 border-t flex flex-col rounded-b-xl ${
                 theme === "light"
                   ? "bg-light-surface border-gray-200"
                   : "bg-dark-card border-gray-700"
