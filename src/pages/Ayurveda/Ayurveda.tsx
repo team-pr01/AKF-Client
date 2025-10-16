@@ -197,7 +197,7 @@ const Ayurveda = () => {
                   : "text-dark-text-tertiary"
               }`}
             >
-              No Vastu tips found
+              No ayurveda found
             </p>
           ) : isLoading || isFetching ? (
             <Loader />
