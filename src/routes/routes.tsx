@@ -22,6 +22,7 @@ import QuizResult from "../pages/QuizResult/QuizResult";
 import MyProfile from "../pages/MyProfile/MyProfile";
 import Settings from "../pages/Settings/Settings";
 import Emergency from "../pages/Emergency/Emergency";
+import Ayurveda from "../pages/Ayurveda/Ayurveda";
 
 export const router = createBrowserRouter([
   {
@@ -92,6 +93,10 @@ export const router = createBrowserRouter([
       {
         path: "/emergency",
         element: <Emergency/>,
+      },
+      {
+        path: "/ayurveda",
+        element: <Ayurveda/>,
       },
     ],
   },

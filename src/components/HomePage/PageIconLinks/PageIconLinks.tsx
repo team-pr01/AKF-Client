@@ -9,6 +9,7 @@ import {
   JyotishServiceIcon,
 } from "../../../constants";
 import { Link } from "react-router-dom";
+import { Leaf } from "lucide-react";
 
 interface ServiceItem {
   id: string;
@@ -74,6 +75,14 @@ const services: ServiceItem[] = [
     gradientClasses:
       "from-teal-500 to-cyan-500 dark:from-teal-600 dark:to-cyan-600",
     path: "/shop",
+  },
+  {
+    id: "ayurveda",
+    name: "Ayurveda",
+    icon: <Leaf />,
+    gradientClasses:
+      "from-green-500 to-emerald-500 dark:from-green-600 dark:to-emerald-600",
+    path: "/ayurveda",
   },
 ];
 
