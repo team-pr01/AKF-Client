@@ -2,7 +2,11 @@ import { useForm } from "react-hook-form";
 import PasswordInput from "../../../components/Reusable/PasswordInput/PasswordInput";
 import TextInput from "../../../components/Reusable/TextInput/TextInput";
 import { useState } from "react";
-import { AlertCircleIcon, CheckCircleIcon, LoaderIcon } from "../../../constants";
+import {
+  AlertCircleIcon,
+  CheckCircleIcon,
+  LoaderIcon,
+} from "../../../constants";
 import { Link, useNavigate } from "react-router-dom";
 import { useLoginMutation } from "../../../redux/Features/Auth/authApi";
 import { useDispatch } from "react-redux";
@@ -170,7 +174,7 @@ const Login = () => {
       >
         Don&apos;t have an account?{" "}
         <Link
-          to={"/auth/sign-up"}
+          to={"/auth/signup"}
           className={`font-medium transition-colors ${
             theme === "dark"
               ? "text-brand-yellow hover:text-brand-orange"

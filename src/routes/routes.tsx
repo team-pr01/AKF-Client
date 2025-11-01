@@ -111,7 +111,7 @@ export const router = createBrowserRouter([
     errorElement: <NotFound />,
     children: [
       {
-        path: "sign-up",
+        path: "signup",
         element: <SignUp />,
       },
       {

@@ -45,6 +45,9 @@ const SignUp = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
   const [error, setError] = useState("");
   const [currentStep, setCurrentStep] = useState<SignupStep>(1);
+  const [selectedOption, setSelectedOption] = useState<"user" | "temple">(
+    "user"
+  );
 
   const progressPercentage = ((currentStep - 1) / 1) * 100; // 2 steps only
 
@@ -61,6 +64,7 @@ const SignUp = () => {
       formData.append("country", data.country);
       formData.append("state", data.state);
       formData.append("city", data.city);
+      formData.append("role", selectedOption);
       if (data.area) formData.append("area", data.area);
       if (data.file && data.file.length > 0) {
         formData.append("file", data.file[0]);
@@ -237,6 +241,32 @@ const SignUp = () => {
               isPasswordVisible={isPasswordVisible}
               setIsPasswordVisible={setIsPasswordVisible}
             />
+
+            <div className="flex items-center gap-6">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="joinOption"
+                  value="user"
+                  checked={selectedOption === "user"}
+                  onChange={() => setSelectedOption("user")}
+                  className="accent-primary-500 w-4 h-4"
+                />
+                <span className="text-neutral-10">Join as User</span>
+              </label>
+
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="joinOption"
+                  value="temple"
+                  checked={selectedOption === "temple"}
+                  onChange={() => setSelectedOption("temple")}
+                  className="accent-primary-500 w-4 h-4"
+                />
+                <span className="text-neutral-10">Join as Temple</span>
+              </label>
+            </div>
           </>
         )}
 
