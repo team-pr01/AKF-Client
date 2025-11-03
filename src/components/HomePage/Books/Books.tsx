@@ -1,17 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useNavigate } from "react-router-dom";
 import { useTheme } from "../../../contexts/ThemeContext";
 import { useGetAllBooksQuery } from "../../../redux/Features/Book/bookApi";
 
 const Books = () => {
   const { theme } = useTheme();
-const { data: bookData, isLoading: isBooksLoading } = useGetAllBooksQuery({});
+  const { data: bookData, isLoading: isBooksLoading } = useGetAllBooksQuery({});
+  console.log(bookData?.data[0]);
+  const navigate = useNavigate();
 
   return (
-    <section className={`px-4 py-2 ${
+    <section
+      className={`px-4 py-2 ${
         theme === "light"
           ? "bg-light-primary text-light-text-primary"
           : "bg-primary text-dark-text-primary"
-      }`}>
+      }`}
+    >
       <h2 className="text-xl font-semibold dark:text-dark-text-primary mb-3 text-gradient bg-gradient-to-r from-brand-orange to-brand-yellow bg-clip-text text-transparent">
         Sacred Texts
       </h2>
@@ -53,7 +58,8 @@ const { data: bookData, isLoading: isBooksLoading } = useGetAllBooksQuery({});
               className="flex-shrink-0 w-32 sm:w-36 group cursor-pointer transform hover:scale-105 transition-transform duration-300 ease-in-out"
               role="button"
               tabIndex={0}
-              aria-label={book.title}
+              onClick={()=>{ navigate(`/books/${book._id}`)}}
+              aria-label={book.name}
             >
               <div
                 className="relative h-44 sm:h-48 rounded-lg overflow-hidden shadow-lg group-hover:shadow-xl group-hover:shadow-brand-orange/40 dark:group-hover:shadow-brand-yellow/40 animate-soft-breathing-shadow border-2 border-transparent group-hover:border-brand-orange/50 transition-all duration-300"
@@ -66,16 +72,16 @@ const { data: bookData, isLoading: isBooksLoading } = useGetAllBooksQuery({});
               >
                 <img
                   src={book.imageUrl}
-                  alt={book.title}
+                  alt={book.name}
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent opacity-90 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-2.5">
                   <h3 className="text-sm font-medium text-white group-hover:text-brand-yellow transition-colors duration-300 truncate">
-                    {book.title}
+                    {book.name}
                   </h3>
-                  {book.description && (
+                  {book.type && (
                     <p className="text-xs text-gray-300 group-hover:text-gray-100 transition-colors duration-300 truncate">
-                      {book.description}
+                      {book.type}
                     </p>
                   )}
                 </div>

@@ -24,6 +24,7 @@ import Settings from "../pages/Settings/Settings";
 import Emergency from "../pages/Emergency/Emergency";
 import Ayurveda from "../pages/Ayurveda/Ayurveda";
 import Shop from "../pages/Shop/Shop";
+import BookDetails from "../pages/BookDetails/BookDetails";
 
 export const router = createBrowserRouter([
   {
@@ -102,6 +103,10 @@ export const router = createBrowserRouter([
       {
         path: "/shop",
         element: <Shop/>,
+      },
+      {
+        path: "/books/:id",
+        element: <BookDetails/>,
       },
     ],
   },
