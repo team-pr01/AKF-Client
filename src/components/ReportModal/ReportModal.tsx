@@ -16,7 +16,6 @@ interface ReportModalProps {
   isOpen: boolean;
   onClose: () => void;
   verseId: string;
-  vedaTitle: string;
   originalText: string;
   translation: string;
   bookId: string;

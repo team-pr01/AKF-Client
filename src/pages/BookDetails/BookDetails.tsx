@@ -17,7 +17,6 @@ import {
   useGetSingleBookQuery,
   useGetSingleVedaQuery,
 } from "../../redux/Features/Book/bookApi";
-import { useTheme } from "../../contexts/ThemeContext";
 import ReportModal from "../../components/ReportModal/ReportModal";
 
 const BookDetails = () => {
@@ -39,7 +38,7 @@ const BookDetails = () => {
     name: "select language",
     code: "en",
   });
-  const [currentTranslation, setCurrentTranslation] = useState();
+  const [currentTranslation, setCurrentTranslation] = useState<string | null>(null);
   // selected values
   const [currentSection, setCurrentSection] = useState<string | null>(
     veda?.data?.[0]?.location?.[0]?.value
@@ -59,7 +58,7 @@ const BookDetails = () => {
   >([]);
 
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
-  const [reportingVerse, setReportingVerse] = useState(null);
+  const [reportingVerse, setReportingVerse] = useState<any>(null);
   useEffect(() => {
     if (veda?.data?.length) {
       // 1️⃣ Flatten and normalize all locations
@@ -68,13 +67,18 @@ const BookDetails = () => {
           ?.map((l: any) => l?.value)
           .filter(Boolean);
         return {
-          locationKey: levels?.join("."), // e.g., "1.2" or "1.2.3"
+          locationKey: levels?.join("."),
           levels,
         };
       });
 
       // 2️⃣ Sort numerically level-by-level
-      all.sort((a, b) => {
+      interface FlattenedVerse {
+        locationKey: string;
+        levels: string[];
+      }
+
+      (all as FlattenedVerse[]).sort((a: FlattenedVerse, b: FlattenedVerse) => {
         const aParts = a.levels.map(Number);
         const bParts = b.levels.map(Number);
         for (let i = 0; i < Math.max(aParts.length, bParts.length); i++) {
@@ -237,7 +241,7 @@ const BookDetails = () => {
     console.log(current);
 
     const availableTranslationLanguageCodes =
-      current?.translations?.map((t) => t.langCode?.toLowerCase()) || [];
+      current?.translations?.map((t:any) => t.langCode?.toLowerCase()) || [];
 
     // Only call if translation exists for target language
     if (
@@ -247,9 +251,18 @@ const BookDetails = () => {
     )
       getTranslationByLang(targetLanguage.code);
   }, [CurrentVeda, targetLanguage, veda]);
-  const getTranslationByLang = (langCode) => {
+  interface Translation {
+    langCode?: string;
+    translation?: string;
+  }
+
+  interface VerseData {
+    translations?: Translation[];
+  }
+
+  const getTranslationByLang = (langCode: string): void => {
     const showTranslation =
-      verseData?.translations?.find((t) => t.langCode === langCode)
+      (verseData as VerseData)?.translations?.find((t) => t.langCode === langCode)
         ?.translation || "Translation not available";
     setCurrentTranslation(showTranslation);
     console.log(currentTranslation, "translation");
@@ -258,7 +271,7 @@ const BookDetails = () => {
     setIsReportModalOpen(false);
     setReportingVerse(null);
   };
-  const handleOpenReportModal = (verse) => {
+  const handleOpenReportModal = (verse:any) => {
     setReportingVerse(verse);
     setIsReportModalOpen(true);
   };
@@ -266,7 +279,7 @@ const BookDetails = () => {
     if (!allLanguages || !CurrentVeda?.data?.[0]) return [];
 
     const availableTranslationLanguageCodes =
-      CurrentVeda.data[0]?.translations?.map((t) => t.langCode.toLowerCase());
+      CurrentVeda.data[0]?.translations?.map((t:any) => t.langCode.toLowerCase());
 
     // Return an array of language codes (strings) that are available in translations
     return allLanguages
@@ -431,8 +444,8 @@ const BookDetails = () => {
             {verseData?.originalText &&
               verseData.originalText
                 .split("।")
-                .filter((line) => line.trim() !== "")
-                .map((line, index) => (
+                .filter((line:any) => line.trim() !== "")
+                .map((line:any, index:number) => (
                   <p
                     key={`orig-${index}`}
                     className="text-xl text-[#2D3748] dark:text-[#F7FAFC] text-center leading-relaxed mb-4 font-serif"
@@ -632,11 +645,11 @@ const BookDetails = () => {
           </div>
         </div>
       )}
-      {isReportModalOpen && reportingVerse && currentTranslation && (
+      {isReportModalOpen && reportingVerse && currentTranslation && vedaId && (
         <ReportModal
           isOpen={isReportModalOpen}
           onClose={handleCloseReportModal}
-          verseId={reportingVerse._id}
+          verseId={reportingVerse?._id}
           bookId={vedaId}
           originalText={verseData.originalText}
           translation={currentTranslation}

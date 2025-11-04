@@ -12,12 +12,18 @@ import {
   TwitterIcon,
   XIcon,
 } from "../../constants";
-import { useGetAllNewsQuery } from "../../redux/Features/News/newsApi";
+import {
+  useGetAllNewsQuery,
+  useLikeNewsMutation,
+  useViewNewsMutation,
+} from "../../redux/Features/News/newsApi";
 import { useGetAllCategoriesQuery } from "../../redux/Features/Categories/ReelCategory/categoriesApi";
 import Loader from "../../components/Shared/Loader/Loader";
 import { formatDate } from "../../utils/formatDate";
 import { LANGUAGES } from "../../utils/allLanguages";
-import { X } from "lucide-react";
+import { Eye, Heart, X } from "lucide-react";
+import { useSelector } from "react-redux";
+import { useCurrentUser } from "../../redux/Features/Auth/authSlice";
 
 const categoryGradients = [
   "from-blue-500 to-sky-500 dark:from-blue-600 dark:to-sky-600",
@@ -30,7 +36,7 @@ const categoryGradients = [
 ];
 const News = () => {
   const { theme } = useTheme();
-
+  const user = useSelector(useCurrentUser) as any;
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -40,9 +46,24 @@ const News = () => {
     category: selectedCategory,
     keyword: searchQuery,
   });
+  const [likeNews, { isLoading: isLikeLoading }] = useLikeNewsMutation();
+  const [viewNews, { isLoading: isViewLoading }] = useViewNewsMutation();
 
   console.log(translatedArticles);
-
+  const handleLike = async (id: string) => {
+    try {
+      await likeNews(id).unwrap();
+    } catch (err) {
+      console.error("❌ Error liking news:", err);
+    }
+  };
+  const handleView = async (id: string) => {
+    try {
+      await viewNews(id).unwrap();
+    } catch (err) {
+      console.error("❌ Error viewing news:", err);
+    }
+  };
   useEffect(() => {
     const langCode = selectedLang?.code;
     if (!data?.data || !langCode) {
@@ -255,7 +276,7 @@ const News = () => {
         ) : (
           translatedArticles?.map((article: any) => {
             const translated = article?.translations?.[selectedLang.code];
-
+            const userLiked = article?.likedBy?.includes(user?._id);
             return (
               <div
                 key={translated?._id}
@@ -288,7 +309,7 @@ const News = () => {
                       title="Date published"
                     >
                       <CalendarIcon className="w-3.5 h-3.5" />
-                      <span>{formatDate(translated?.createdAt)}</span>
+                       <span>{formatDate(article?.createdAt)}</span>
                     </div>
                   </div>
 
@@ -313,18 +334,38 @@ const News = () => {
                   </p>
 
                   <div
-                    className={`flex items-center justify-end text-xs mt-4 pt-3 ${
+                    className={`flex items-center justify-between text-xs mt-4 pt-3 ${
                       theme === "light"
                         ? "text-light-text-tertiary border-t border-gray-200"
                         : "text-dark-text-tertiary border-t border-gray-700"
                     }`}
                   >
+                    <div className="flex items-center justify-start gap-3">
+                      <div className="flex items-center justify-center gap-1">
+                        <Eye className={"size-6"} />
+                        {article.views}
+                      </div>
+                      <div
+                        className="flex items-center justify-center gap-1 cursor-pointer"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleLike(article._id);
+                        }}
+                      >
+                        <Heart
+                          className={"size-6"}
+                          fill={userLiked ? "#EF4444" : "none"}
+                        />
+                        {article.likes}
+                      </div>
+                    </div>
                     <button
-                      onClick={() =>
-                        handleOpenArticleModal({
+                      onClick={() =>{handleOpenArticleModal({
                           ...translated,
                           createdAt: article?.createdAt,
                         })
+                        handleView(article._id)}
+                        
                       }
                       className="text-xs bg-brand-orange px-2 py-1 rounded text-white"
                     >

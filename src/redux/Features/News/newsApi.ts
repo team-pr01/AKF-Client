@@ -27,7 +27,30 @@ const newsApi = baseApi.injectEndpoints({
       }),
       providesTags: ["news"],
     }),
+    likeNews: builder.mutation({
+  query: (newsId) => ({
+    url: `/news/like/${newsId}`,
+    method: 'PATCH',
+    credentials: 'include',
+  }),
+  invalidatesTags: ['news'],
+}),
+
+viewNews: builder.mutation({
+  query: (newsId) => ({
+    url: `/news/view/${newsId}`,
+    method: 'PATCH',
+    credentials: 'include',
+  }),
+  invalidatesTags: ['news'],
+}),
+
   }),
 });
 
-export const { useGetAllNewsQuery, useGetSingleNewsQuery } = newsApi;
+export const {
+  useGetAllNewsQuery,
+  useGetSingleNewsQuery,
+  useLikeNewsMutation,
+  useViewNewsMutation,
+} = newsApi;
