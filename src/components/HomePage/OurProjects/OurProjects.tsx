@@ -1,19 +1,25 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState } from "react";
 import { HeartIcon } from "../../../constants";
 import { useTheme } from "../../../contexts/ThemeContext";
 import { useGetAllDonationProgramsQuery } from "../../../redux/Features/DonationPrograms/donationProgramApi";
+import MakePaymentModal from "../../Shared/MakePaymentModal/MakePaymentModal";
 
 const OurProjects = () => {
   const { theme } = useTheme();
   const { data: programData, isLoading: isProgramLoading } =
     useGetAllDonationProgramsQuery({});
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [selectedProject, setSelectedProject] = useState<any>(null);
 
   return (
-    <section className={`px-4 py-2 pb-24 ${
+    <section
+      className={`px-4 py-2 pb-24 ${
         theme === "light"
           ? "bg-light-primary text-light-text-primary"
           : "bg-primary text-dark-text-primary"
-      }`}>
+      }`}
+    >
       <h2 className="text-xl font-semibold dark:text-dark-text-primary mb-3 text-gradient bg-gradient-to-r from-brand-blue to-emerald-500 bg-clip-text text-transparent">
         Our Projects
       </h2>
@@ -83,6 +89,10 @@ const OurProjects = () => {
                     </p>
                   )}
                   <button
+                    onClick={() => {
+                      setSelectedProject(item);
+                      setIsModalOpen(true);
+                    }}
                     className="mt-auto w-full bg-gradient-to-r from-brand-orange to-yellow-400 dark:from-brand-orange dark:to-yellow-500 hover:from-yellow-400 hover:to-brand-orange dark:hover:from-yellow-500 dark:hover:to-brand-orange bg-200% animate-background-pan-fast transition-all duration-300 text-white rounded-md py-2 px-3 text-xs font-medium flex items-center justify-center gap-1.5 shadow-md hover:shadow-lg"
                     aria-label={`Donate to ${item.title}`}
                   >
@@ -95,6 +105,13 @@ const OurProjects = () => {
           ))
         )}
       </div>
+
+      {isModalOpen && (
+        <MakePaymentModal
+          isInputFieldDisable={false}
+          setIsModalOpen={setIsModalOpen}
+        />
+      )}
     </section>
   );
 };

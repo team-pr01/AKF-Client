@@ -16,7 +16,7 @@ const MakePaymentModal = ({
   isInputFieldDisable,
   setIsModalOpen,
 }: {
-  amount: number | string;
+  amount?: number | string;
   isInputFieldDisable: boolean;
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {

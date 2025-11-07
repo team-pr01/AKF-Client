@@ -11,6 +11,7 @@ import { useGetAllConsultancyServicesQuery } from "../../redux/Features/Consulta
 const Consultancy = () => {
   const { theme } = useTheme();
   const [searchQuery, setSearchQuery] = useState("");
+  
   const [selectedCategory, setSelectedCategory] = useState("");
   const { data, isFetching, isLoading } = useGetAllConsultancyServicesQuery({
     category: selectedCategory,
@@ -26,12 +27,16 @@ const Consultancy = () => {
     (category: any) => category.category
   );
 
+ ;
+
   return (
-    <div className={`min-h-screen font-sans pb-16 ${
-            theme === "light"
-              ? "bg-light-primary text-light-text-primary"
-              : "bg-primary text-dark-text-primary"
-          }`}>
+    <div
+      className={`min-h-screen font-sans pb-16 ${
+        theme === "light"
+          ? "bg-light-primary text-light-text-primary"
+          : "bg-primary text-dark-text-primary"
+      }`}
+    >
       <PageHeader title={"Consultancy Services"} />
 
       <div
@@ -105,100 +110,7 @@ const Consultancy = () => {
         )}
       </main>
 
-      {/* {showPaymentModal && selectedDoctor && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50" onClick={() => {if(!isProcessing) setShowPaymentModal(false);}}>
-          <div className={`rounded-xl p-5 sm:p-6 w-full max-w-md shadow-2xl max-h-[90vh] overflow-y-auto ${theme === 'light' ? 'bg-light-surface text-light-text-primary' : 'bg-dark-card text-dark-text-primary'}`} onClick={(e) => e.stopPropagation()}>
-            <div className="flex justify-between items-center mb-5">
-              <h2 className="text-xl font-semibold text-brand-orange">{translate('confirmBookingTitle', 'Confirm Booking')}</h2>
-              <button
-                onClick={() => {if(!isProcessing) setShowPaymentModal(false);}}
-                disabled={isProcessing}
-                className={`p-1.5 rounded-full transition-colors disabled:opacity-50 ${theme === 'light' ? 'hover:bg-gray-200 text-light-text-secondary' : 'hover:bg-gray-700 text-dark-text-secondary'}`}
-                aria-label={translate('closePaymentModalAria', "Close payment modal")}
-              >
-                <XIcon className="w-5 h-5" />
-              </button>
-            </div>
-
-            {!paymentSuccess ? (
-              <>
-                <div className={`mb-5 rounded-lg p-4 ${theme === 'light' ? 'bg-light-surface-alt' : 'bg-dark-surface-alt'}`}>
-                  <h3 className={`font-medium mb-1.5 ${theme === 'light' ? 'text-light-text-primary' : 'text-dark-text-primary'}`}>{translate('consultationWithLabel', 'Consultation With:')}</h3>
-                  <p className={`text-sm ${theme === 'light' ? 'text-light-text-secondary' : 'text-dark-text-secondary'}`}>Dr. {selectedDoctor.name} ({selectedDoctor.speciality})</p>
-                  <p className={`text-sm ${theme === 'light' ? 'text-light-text-secondary' : 'text-dark-text-secondary'}`}>{translate('timeLabel', 'Time')}: {selectedDoctor.nextAvailable}</p>
-                  <p className="text-md font-semibold text-brand-orange mt-2">{translate('totalAmountLabel', 'Total Amount')}: ৳{selectedDoctor.price}</p>
-                </div>
-
-                <div className="space-y-3">
-                  <h3 className={`font-medium mb-1 ${theme === 'light' ? 'text-light-text-primary' : 'text-dark-text-primary'}`}>{translate('selectPaymentMethodLabel', 'Select Payment Method:')}</h3>
-                  
-                  {(['card', 'bkash', 'nagad'] as const).map((method) => (
-                    <button
-                      key={method}
-                      onClick={() => setSelectedPaymentMethod(method)}
-                      disabled={isProcessing}
-                      className={`w-full p-3.5 rounded-lg flex items-center gap-3 transition-all duration-200 ease-in-out border-2
-                        ${ selectedPaymentMethod === method
-                            ? 'bg-brand-orange/20 border-brand-orange text-brand-orange font-medium'
-                            : `${theme === 'light' ? 'bg-light-surface-alt border-gray-300 hover:border-brand-orange text-light-text-secondary' : 'bg-dark-surface-alt border-gray-600 hover:border-brand-orange text-dark-text-secondary'} disabled:opacity-70`
-                        }`}
-                    >
-                      {method === 'card' && <CreditCardIcon className="w-5 h-5" />}
-                      {method === 'bkash' && <BikashIconSVG className="w-5 h-5" />}
-                      {method === 'nagad' && <NagadIconSVG className="w-5 h-5" />}
-                      <span className="capitalize text-sm">{method}</span>
-                      {selectedPaymentMethod === method && (
-                        <CheckCircleIcon className="w-5 h-5 ml-auto text-green-400" />
-                      )}
-                    </button>
-                  ))}
-                </div>
-
-                {paymentError && (
-                  <div className={`mt-4 rounded-lg p-3 text-sm flex items-center gap-2 ${theme === 'light' ? 'bg-red-100 border border-red-300 text-red-700' : 'bg-red-900/30 border border-red-700 text-red-300'}`}>
-                    <AlertTriangleIcon className="w-5 h-5 flex-shrink-0" />
-                    <span>{paymentError}</span>
-                  </div>
-                )}
-
-                <button
-                  onClick={handlePayment}
-                  disabled={!selectedPaymentMethod || isProcessing}
-                  className="w-full mt-6 bg-brand-orange hover:bg-opacity-90 transition-colors rounded-lg py-3 flex items-center justify-center gap-2 font-medium text-white disabled:opacity-60 disabled:cursor-not-allowed"
-                >
-                  {isProcessing ? (
-                    <>
-                      <LoaderIcon className="w-5 h-5 animate-spin" />
-                      <span>{translate('processingPayment', 'Processing Payment...')}</span>
-                    </>
-                  ) : (
-                    <>
-                      <CreditCardIcon className="w-5 h-5" />
-                      <span>{translate('payAmountButton', `Pay ৳${selectedDoctor.price}`, { amount: selectedDoctor.price })}</span>
-                    </>
-                  )}
-                </button>
-              </>
-            ) : (
-              <div className="text-center py-4">
-                <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                  <CheckCircleIcon className="w-10 h-10 text-white" />
-                </div>
-                <h3 className="text-xl font-semibold text-green-400 mb-2">{translate('paymentSuccessfulTitle', 'Payment Successful!')}</h3>
-                <p className={`mb-6 text-sm ${theme === 'light' ? 'text-light-text-secondary' : 'text-dark-text-secondary'}`}>
-                  {translate('bookingConfirmationMessage', `Your consultation with Dr. ${selectedDoctor.name} has been booked. You will receive a confirmation shortly.`, { name: selectedDoctor.name })}
-                </p>
-                <button
-                  onClick={() => setShowPaymentModal(false)}
-                  className="bg-brand-orange hover:bg-opacity-90 transition-colors rounded-lg px-6 py-2.5 text-white font-medium"
-                >
-                  {translate('doneButton', 'Done')}
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      )} */}
+      
     </div>
   );
 };

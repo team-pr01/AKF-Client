@@ -1,6 +1,8 @@
-import { Clock, Star } from "lucide-react";
+import { ArrowRightIcon, Clock, Star } from "lucide-react";
 import Loader from "../../Shared/Loader/Loader";
 import { useTheme } from "../../../contexts/ThemeContext";
+import BookConsultationConfirmModal from "../../BookConsultationConfirmModal/BookConsultationConfirmModal";
+import { useState } from "react";
 
 interface Expert {
   _id: string;
@@ -22,6 +24,12 @@ interface ExpertsProps {
 
 const Experts: React.FC<ExpertsProps> = ({ data, title, isLoading }) => {
   const { theme } = useTheme();
+  const [isBookConsultationModalOpen, setIsBookConsultationModalOpen] =
+    useState<boolean>(false);
+
+  const handleConfirmBooking = () => {
+    //jhjhy
+  };
 
   return (
     <div className="w-full">
@@ -42,9 +50,7 @@ const Experts: React.FC<ExpertsProps> = ({ data, title, isLoading }) => {
               <div key={expert._id} className="block">
                 <div
                   className={`rounded-xl p-4 flex gap-3 shadow-md hover:shadow-lg transition-shadow duration-200 ${
-                    theme === "light"
-                      ? "bg-white"
-                      : "bg-dark-card"
+                    theme === "light" ? "bg-white" : "bg-dark-card"
                   }`}
                 >
                   <div className="relative size-20">
@@ -57,15 +63,21 @@ const Experts: React.FC<ExpertsProps> = ({ data, title, isLoading }) => {
                   <div className="flex-1">
                     <h3
                       className={`text-base font-bold mb-1 ${
-                        theme === "light" ? "text-gray-800" : "text-dark-text-primary"
+                        theme === "light"
+                          ? "text-gray-800"
+                          : "text-dark-text-primary"
                       }`}
                     >
                       {expert.name}
                     </h3>
-                    <p className="text-sm text-orange-600 mb-1">{expert.specialty}</p>
+                    <p className="text-sm text-orange-600 mb-1">
+                      {expert.specialty}
+                    </p>
                     <p
                       className={`text-xs mb-2 ${
-                        theme === "light" ? "text-gray-500" : "text-dark-text-tertiary"
+                        theme === "light"
+                          ? "text-gray-500"
+                          : "text-dark-text-tertiary"
                       }`}
                     >
                       {expert.experience} experience
@@ -73,10 +85,15 @@ const Experts: React.FC<ExpertsProps> = ({ data, title, isLoading }) => {
 
                     <div className="flex justify-between items-center mb-2">
                       <div className="flex items-center gap-1">
-                        <Star size={16} className="text-amber-500 fill-amber-500" />
+                        <Star
+                          size={16}
+                          className="text-amber-500 fill-amber-500"
+                        />
                         <span
                           className={`text-sm font-semibold ${
-                            theme === "light" ? "text-gray-800" : "text-dark-text-primary"
+                            theme === "light"
+                              ? "text-gray-800"
+                              : "text-dark-text-primary"
                           }`}
                         >
                           {expert.rating}
@@ -108,6 +125,22 @@ const Experts: React.FC<ExpertsProps> = ({ data, title, isLoading }) => {
                         </span>
                       ))}
                     </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsBookConsultationModalOpen(true);
+                      }}
+                      className={`w-full text-sm flex items-center justify-center gap-2 px-3 py-2 rounded-lg font-semibold transition-all duration-200 ease-in-out hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-offset-2 mt-2
+                          ${
+                            theme === "light"
+                              ? "bg-brand-orange text-white hover:bg-opacity-90 focus:ring-brand-orange focus:ring-offset-gray-50"
+                              : "bg-brand-yellow text-black hover:bg-opacity-90 focus:ring-brand-yellow focus:ring-offset-gray-800"
+                          }
+                        `}
+                    >
+                      <span>Book Consultation</span>
+                      <ArrowRightIcon className="w-5 h-5" />
+                    </button>
                   </div>
                 </div>
               </div>
@@ -125,6 +158,15 @@ const Experts: React.FC<ExpertsProps> = ({ data, title, isLoading }) => {
       </div>
 
       <div className="h-5"></div>
+
+      {isBookConsultationModalOpen && (
+        <BookConsultationConfirmModal
+          setIsModalOpen={setIsBookConsultationModalOpen}
+          onConfirm={handleConfirmBooking}
+          title="Confirm Consultation"
+          message="Are you sure you want to book this consultation session?"
+        />
+      )}
     </div>
   );
 };
