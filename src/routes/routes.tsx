@@ -25,6 +25,7 @@ import Emergency from "../pages/Emergency/Emergency";
 import Ayurveda from "../pages/Ayurveda/Ayurveda";
 import Shop from "../pages/Shop/Shop";
 import BookDetails from "../pages/BookDetails/BookDetails";
+import SubscriptionPlans from "../pages/SubscriptionPlans/SubscriptionPlans";
 
 export const router = createBrowserRouter([
   {
@@ -83,6 +84,10 @@ export const router = createBrowserRouter([
       {
         path: "/settings",
         element: <Settings/>,
+      },
+      {
+        path: "/subscription-plans",
+        element: <SubscriptionPlans/>,
       },
       {
         path: "/attend-quiz/:id",

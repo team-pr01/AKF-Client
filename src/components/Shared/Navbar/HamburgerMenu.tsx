@@ -10,7 +10,7 @@ import {
 import { useTheme } from "../../../contexts/ThemeContext";
 import { logout, useCurrentUser } from "../../../redux/Features/Auth/authSlice";
 import { Link, useNavigate } from "react-router-dom";
-import { LogIn } from "lucide-react";
+import { GiftIcon, LogIn } from "lucide-react";
 
 const HamburgerMenu = ({
   isHamburgerMenuOpen,
@@ -156,6 +156,20 @@ const HamburgerMenu = ({
                 }`}
               />{" "}
               Settings
+            </Link>
+            <Link
+              to={"/subscription-plans"}
+              onClick={() => setHamburgerMenuOpen(false)}
+              className={navItemClass}
+            >
+              <GiftIcon
+                className={`w-5 h-5 ${
+                  theme === "light"
+                    ? "text-light-text-tertiary group-hover:text-brand-orange"
+                    : "text-gray-400 group-hover:text-white"
+                }`}
+              />{" "}
+              Subscription Plans
             </Link>
             {/* <button
               onClick={() => {

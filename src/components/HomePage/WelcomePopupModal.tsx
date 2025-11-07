@@ -31,7 +31,7 @@ const WelcomePopupModal: React.FC<WelcomePopupModalProps> = ({
   return (
     <div
       className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-[200]"
-      onClick={onClose} // Close when clicking on the overlay
+      onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="welcome-popup-title"
@@ -44,7 +44,7 @@ const WelcomePopupModal: React.FC<WelcomePopupModalProps> = ({
               : "bg-gradient-to-br from-dark-surface to-gray-800 text-white"
           }
         `}
-        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal content
+        onClick={(e) => e.stopPropagation()} 
       >
         {/* Close button remains at the top right of the entire modal card */}
         <button
@@ -65,7 +65,7 @@ const WelcomePopupModal: React.FC<WelcomePopupModalProps> = ({
           <div className="w-full h-48 overflow-hidden rounded-t-xl">
             <img
               src={imageUrl}
-              alt={imageAlt || title} // Use title as fallback alt text
+              alt={imageAlt || title}
               className="w-full h-full object-cover"
             />
           </div>
@@ -79,7 +79,7 @@ const WelcomePopupModal: React.FC<WelcomePopupModalProps> = ({
           }`}
         >
           <div className="flex items-center mb-3">
-            {!imageUrl /* Only show placeholder logo if no custom image */ && (
+            {!imageUrl && (
               <img
                 src="/logo_placeholder.png"
                 alt="App Logo"
