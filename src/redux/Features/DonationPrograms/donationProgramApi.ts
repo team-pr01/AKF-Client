@@ -33,6 +33,15 @@ const donationProgramApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["donations"],
     }),
+   donate: builder.mutation<any, any>({
+      query: (data) => ({
+        url: `/donation/donate`,
+        method: "POST",
+        body: data,
+        credentials: "include",
+      }),
+      invalidatesTags: ["donations"],
+    }),
 
     deleteDonationProgram: builder.mutation<any, string>({
       query: (id) => ({
@@ -61,4 +70,5 @@ export const {
   useCreateDonationProgramMutation,
   useDeleteDonationProgramMutation,
   useUpdateDonationProgramMutation,
+  useDonateMutation
 } = donationProgramApi;

@@ -21,10 +21,14 @@ const reelsApi = baseApi.injectEndpoints({
       }),
       providesTags: ["reels"],
     }),
+    likeVideo: builder.mutation({
+      query: (videoId) => ({
+        url: `/reels/like/${videoId}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["reels"],
+    }),
   }),
 });
 
-export const {
-  useGetAllReelsQuery,
-  useGetSingleReelQuery,
-} = reelsApi;
+export const { useGetAllReelsQuery, useGetSingleReelQuery,useLikeVideoMutation } = reelsApi;

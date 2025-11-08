@@ -97,7 +97,7 @@ const OurProjects = () => {
                     aria-label={`Donate to ${item.title}`}
                   >
                     <HeartIcon className="w-3.5 h-3.5" />
-                    Donate Program Coming Soon
+                   Collaborate
                   </button>
                 </div>
               </div>
@@ -110,6 +110,8 @@ const OurProjects = () => {
         <MakePaymentModal
           isInputFieldDisable={false}
           setIsModalOpen={setIsModalOpen}
+          programData={selectedProject}
+          paymentReason="donation"
         />
       )}
     </section>

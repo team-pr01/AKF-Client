@@ -1,31 +1,42 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ArrowRightIcon, XIcon, QrCodeIcon } from "lucide-react";
+import { ArrowRightIcon, XIcon, QrCodeIcon} from "lucide-react";
 import { useTheme } from "../../../contexts/ThemeContext";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import TextInput from "../../Reusable/TextInput/TextInput";
+import { FaPaypal } from "react-icons/fa";
+import { SiStripe } from "react-icons/si";
+import { ICONS } from "../../../assets";
+import { useDonateMutation } from "../../../redux/Features/DonationPrograms/donationProgramApi";
+import { toast } from "sonner";
+import { useSubscribeMutation } from "../../../redux/Features/Subscription/subscriptionApi";
+import { useNavigate } from "react-router-dom";
 
 interface PaymentFormData {
-  email: string;
   amount?: string;
-  note?: string;
+  accountNumber?: string;
 }
 
 const MakePaymentModal = ({
-  amount,
   isInputFieldDisable,
   setIsModalOpen,
+  programData,
+  paymentReason,
 }: {
   amount?: number | string;
   isInputFieldDisable: boolean;
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  programData?: any;
+  paymentReason: string;
 }) => {
   const { theme } = useTheme();
   const [selectedMethod, setSelectedMethod] = useState<
-    "paypal" | "stripe" | null
+    "paypal" | "stripe" | "bkash" | "nagad" | "bank" | null
   >(null);
   const [showQR, setShowQR] = useState<boolean>(false);
-
+  const [donate, { isLoading }] = useDonateMutation();
+  const [Subscribe, { isLoading:isSubscribing }] = useSubscribeMutation();
+  const navigate=useNavigate();
   const {
     register,
     handleSubmit,
@@ -33,12 +44,43 @@ const MakePaymentModal = ({
     reset,
   } = useForm<PaymentFormData>();
 
-  const onSubmit = (data: PaymentFormData) => {
-    console.log("Payment data:", data);
-    // Handle payment submission
+  const onSubmit = async (data: PaymentFormData) => {
+    try {
+      
+      if (paymentReason === "donation") {
+        const payload = {
+        paymentMethod: selectedMethod,
+        amount: data.amount,
+        donationProgramId: programData?._id || null,
+        donationProgramTitle: programData?.title || null,
+        senderAccountNumber: data.accountNumber || null,
+      };
+        const res = await donate(payload).unwrap();
+        if (res.success) {
+          toast.success("Donated successfully! Thank you for your donation.");
+        }
+      }else if(paymentReason==="subscription"){
+        const payload = {
+        paymentMethod: selectedMethod,
+        amount: data.amount,
+        subscriptionPlanName: programData?.title || null,
+        senderAccountNumber: data.accountNumber || null,
+      };
+         const res = await Subscribe(payload).unwrap();
+        if (res.success) {
+          toast.success("Payment successful! Welcome to our subscription plan.");
+          navigate(`/`);
+        }
+
+      }
+    } catch (err) {
+      console.error("Payment submission error:", err);
+    }
   };
 
-  const handlePaymentMethodSelect = (method: "paypal" | "stripe") => {
+  const handlePaymentMethodSelect = (
+    method: "paypal" | "stripe" | "bkash" | "nagad" | "bank"
+  ) => {
     setSelectedMethod(method);
     setShowQR(true);
     reset(); // Reset form when switching methods
@@ -56,7 +98,7 @@ const MakePaymentModal = ({
       name: "PayPal",
       foundation: "Arya Kallayn Foundation",
       accountId: "foundation@aryakallayn.org",
-      icon: "💳",
+      icon: <FaPaypal className="text-[#00457C] w-7 h-7" />,
       description: "Pay securely with PayPal",
     },
     {
@@ -64,8 +106,38 @@ const MakePaymentModal = ({
       name: "Stripe",
       foundation: "Arya Kallayn Foundation",
       accountId: "payments@aryakallayn.org",
-      icon: "💳",
+      icon: <SiStripe className="text-[#635BFF] w-7 h-7" />,
       description: "Secure card payments via Stripe",
+    },
+    {
+      id: "bkash" as const,
+      name: "bKash",
+      foundation: "Arya Kallayn Foundation",
+      accountId: "017XXXXXXXX",
+      icon: (
+        <img src={ICONS.bKash} alt="bKash" className="w-7 h-7 object-contain" />
+      ),
+      description: "Fast mobile payment via bKash",
+    },
+    {
+      id: "nagad" as const,
+      name: "Nagad",
+      foundation: "Arya Kallayn Foundation",
+      accountId: "018XXXXXXXX",
+      icon: (
+        <img src={ICONS.nagad} alt="Nagad" className="w-7 h-7 object-contain" />
+      ),
+      description: "Send payment easily using Nagad",
+    },
+    {
+      id: "bank" as const,
+      name: "Bank Transfer",
+      foundation: "Arya Kallayn Foundation",
+      accountId: "HDFC Bank • 1234567890 • IFSC: HDFC000XXXX",
+      icon: (
+        <img src={ICONS.bank} alt="Nagad" className="w-7 h-7 object-contain" />
+      ),
+      description: "Direct transfer to our bank account",
     },
   ];
 
@@ -257,16 +329,24 @@ const MakePaymentModal = ({
                   </div>
                 </div>
               )}
+              <p className="text-center text-neutral-800 font-medium italic">Complete the payment and submit the form</p>
 
               {/* Form Fields */}
 
               <TextInput
                 label="Amount"
-                value={amount as any}
                 type="number"
                 placeholder="Enter amount"
                 {...register("amount")}
                 error={errors.amount}
+                isDisabled={isInputFieldDisable}
+              />
+              <TextInput
+                label="Account Number"
+                type="text"
+                placeholder="Enter account number "
+                {...register("accountNumber")}
+                error={errors.accountNumber}
                 isDisabled={isInputFieldDisable}
               />
 
@@ -281,7 +361,9 @@ const MakePaymentModal = ({
                           }
                         `}
               >
-                <span>Complete Payment</span>
+                <span>
+                  {isLoading || isSubscribing? "Completing Payment" : "Complete Payment"}
+                </span>
                 <ArrowRightIcon className="w-5 h-5" />
               </button>
             </form>

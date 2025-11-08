@@ -20,6 +20,7 @@ interface Plan {
 const SubscriptionPlans: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedPlanPrice, setSelectedPlanPrice] = useState<number>(0);
+  const [selectedPlanName, setSelectedPlanName] = useState<string | null>(null);
   const plans: Plan[] = [
     {
       id: "free",
@@ -257,6 +258,7 @@ const SubscriptionPlans: React.FC = () => {
               <button
                 onClick={() => {
                   setSelectedPlanPrice(plan?.price);
+                  setSelectedPlanName(plan?.name);
                     setIsModalOpen(true);
                 }}
                 className={`w-full py-4 px-6 rounded-xl font-bold text-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg disable:cursor-not-allowed ${
@@ -289,8 +291,10 @@ const SubscriptionPlans: React.FC = () => {
       {isModalOpen && (
         <MakePaymentModal
           amount={selectedPlanPrice}
-          isInputFieldDisable={true}
+          isInputFieldDisable={false}
           setIsModalOpen={setIsModalOpen}
+          programData={{ title: selectedPlanName, amount: selectedPlanPrice }}
+          paymentReason="subscription"
         />
       )}
     </div>
