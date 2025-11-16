@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ArrowRightIcon, XIcon, QrCodeIcon} from "lucide-react";
+import { ArrowRightIcon, XIcon, QrCodeIcon } from "lucide-react";
 import { useTheme } from "../../../contexts/ThemeContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import TextInput from "../../Reusable/TextInput/TextInput";
 import { FaPaypal } from "react-icons/fa";
@@ -18,6 +18,7 @@ interface PaymentFormData {
 }
 
 const MakePaymentModal = ({
+  amount,
   isInputFieldDisable,
   setIsModalOpen,
   programData,
@@ -35,43 +36,54 @@ const MakePaymentModal = ({
   >(null);
   const [showQR, setShowQR] = useState<boolean>(false);
   const [donate, { isLoading }] = useDonateMutation();
-  const [Subscribe, { isLoading:isSubscribing }] = useSubscribeMutation();
-  const navigate=useNavigate();
+  const [Subscribe, { isLoading: isSubscribing }] = useSubscribeMutation();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
   } = useForm<PaymentFormData>();
+
+  useEffect(() => {
+    if (paymentReason === "subscription") {
+      setValue(
+        "amount",
+        amount !== undefined && amount !== null ? String(amount) : undefined
+      );
+    }
+  }, [amount, paymentReason, setValue]);
 
   const onSubmit = async (data: PaymentFormData) => {
     try {
-      
       if (paymentReason === "donation") {
         const payload = {
-        paymentMethod: selectedMethod,
-        amount: data.amount,
-        donationProgramId: programData?._id || null,
-        donationProgramTitle: programData?.title || null,
-        senderAccountNumber: data.accountNumber || null,
-      };
+          paymentMethod: selectedMethod,
+          amount: data.amount,
+          donationProgramId: programData?._id || null,
+          donationProgramTitle: programData?.title || null,
+          senderAccountNumber: data.accountNumber || null,
+        };
         const res = await donate(payload).unwrap();
         if (res.success) {
           toast.success("Donated successfully! Thank you for your donation.");
         }
-      }else if(paymentReason==="subscription"){
+      } else if (paymentReason === "subscription") {
         const payload = {
-        paymentMethod: selectedMethod,
-        amount: data.amount,
-        subscriptionPlanName: programData?.title || null,
-        senderAccountNumber: data.accountNumber || null,
-      };
-         const res = await Subscribe(payload).unwrap();
+          paymentMethod: selectedMethod,
+          amount,
+          subscriptionPlanName: programData?.title || null,
+          senderAccountNumber: data.accountNumber || null,
+        };
+        const res = await Subscribe(payload).unwrap();
         if (res.success) {
-          toast.success("Payment successful! Welcome to our subscription plan.");
+          toast.success(
+            "Payment successful! We will review it soon and contact you.",
+            { duration: 5000 }
+          );
           navigate(`/`);
         }
-
       }
     } catch (err) {
       console.error("Payment submission error:", err);
@@ -329,7 +341,9 @@ const MakePaymentModal = ({
                   </div>
                 </div>
               )}
-              <p className="text-center text-neutral-800 font-medium italic">Complete the payment and submit the form</p>
+              <p className="text-center text-neutral-800 font-medium italic">
+                Complete the payment and submit the form
+              </p>
 
               {/* Form Fields */}
 
@@ -340,14 +354,14 @@ const MakePaymentModal = ({
                 {...register("amount")}
                 error={errors.amount}
                 isDisabled={isInputFieldDisable}
+                value={amount || ""}
               />
               <TextInput
-                label="Account Number"
+                label="Sender Account Number"
                 type="text"
-                placeholder="Enter account number "
+                placeholder="Enter sender account number "
                 {...register("accountNumber")}
                 error={errors.accountNumber}
-                isDisabled={isInputFieldDisable}
               />
 
               {/* Submit Button */}
@@ -362,7 +376,9 @@ const MakePaymentModal = ({
                         `}
               >
                 <span>
-                  {isLoading || isSubscribing? "Completing Payment" : "Complete Payment"}
+                  {isLoading || isSubscribing
+                    ? "Completing Payment"
+                    : "Complete Payment"}
                 </span>
                 <ArrowRightIcon className="w-5 h-5" />
               </button>

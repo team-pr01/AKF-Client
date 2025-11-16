@@ -8,8 +8,8 @@ import type {
 } from "@reduxjs/toolkit/query";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "https://vedic-app-server.onrender.com/api/v1",
-  // baseUrl: "http://localhost:5000/api/v1",
+  // baseUrl: "https://vedic-app-server.onrender.com/api/v1",
+  baseUrl: "http://localhost:5000/api/v1",
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).auth.token;
@@ -81,7 +81,8 @@ export const baseApi = createApi({
     "quiz",
     "ayurveda",
     "product",
-    "subscription"
+    "subscription",
+    "jyotish"
   ],
   endpoints: () => ({}),
 });

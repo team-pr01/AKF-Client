@@ -37,12 +37,11 @@ const AiChatPage = () => {
       };
 
       setConversation((prev: any) => [...prev, aiMessage]);
-    } catch (error) {
-      console.error("Error:", error);
+    } catch (error:any) {
 
       // Add error message to conversation
       const errorMessage = {
-        content: "Sorry, there was an error processing your request.",
+        content: error?.data?.message || "Sorry, there was an error processing your request.",
         role: "assistant",
         id: Date.now() + "-error",
       };
