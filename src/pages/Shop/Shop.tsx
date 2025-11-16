@@ -8,6 +8,8 @@ import { useGetAllProductsQuery } from "../../redux/Features/Product/productApi"
 import Loader from "../../components/Shared/Loader/Loader";
 import ProductCard from "../../components/ShopPage/ProductCard/ProductCard";
 import ProductDetailsModal from "../../components/ShopPage/ProductDetailsModal/ProductDetailsModal";
+import { useGetAllProductBannersQuery } from "../../redux/Features/ProductBanner/productBannerApi";
+import ProductBanner from "./ProductBanner ";
 
 const Shop = () => {
   const { theme } = useTheme();
@@ -24,6 +26,11 @@ const Shop = () => {
     page: currentPage,
     limit: 10
   });
+
+
+  // Get all product banner
+  const {data:productBanners} = useGetAllProductBannersQuery({});
+  console.log(productBanners);
 
   const { data: categoryData } = useGetAllCategoriesQuery({});
   const filteredCategory = categoryData?.data?.filter(
@@ -83,7 +90,9 @@ const Shop = () => {
     >
       <PageHeader title={"Spritual Shop"} />
 
-      <div className="p-4 pb-[90px] flex flex-col gap-5">
+      <ProductBanner/>
+
+      <div className="px-4 pb-[90px] flex flex-col gap-5">
         {/* Search Bar */}
         <div
           className={`p-4 flex flex-col sm:flex-row gap-2 sticky top-[60px] z-30 ${
