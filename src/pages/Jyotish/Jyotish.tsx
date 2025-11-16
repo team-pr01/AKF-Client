@@ -9,12 +9,12 @@ import Loader from "../../components/Shared/Loader/Loader";
 import Experts from "../../components/Reusable/Experts/Experts";
 import { useGetAllConsultancyServicesQuery } from "../../redux/Features/ConsultancyService/consultancyServiceApi";
 import AIReading from "./AIReading";
+import { useGetAllDailyHoroscopesQuery } from "../../redux/Features/Jyotish/jyotishApi";
 
 const Jyotish = () => {
   const { theme } = useTheme();
   const [isAiReadingModalOpen, setIsAiReadingModalOpe] = useState(false);
-  // const [searchQuery, setSearchQuery] = useState<string>('');
-  // const [selectedCategory, setSelectedCategory] = useState("");
+  const { data: dailyHoroscope } = useGetAllDailyHoroscopesQuery({});
 
   const { data: experts, isLoading: isExpertsLoading } =
     useGetAllConsultancyServicesQuery({});
@@ -34,29 +34,6 @@ const Jyotish = () => {
     );
     return () => clearInterval(timer);
   }, []);
-
-  //   const categories = [
-  //   { id: "all", key: "allCategory", defaultName: "All", icon: <CompassIcon/> },
-  //   { id: "kundli", key: "kundliCategory", defaultName: "Kundli", icon: <StarIcon/> },
-  //   { id: "horoscope", key: "horoscopeCategory", defaultName: "Horoscope", icon: <SunIcon/> },
-  //   { id: "muhurta", key: "muhurtaCategory", defaultName: "Muhurta", icon: <ClockIcon/> },
-  //   { id: "panchang", key: "panchangCategory", defaultName: "Panchang", icon: <CalendarIcon/> },
-  // ];
-
-  const dailyHoroscope = [
-    {
-      sign: "Aries",
-      prediction:
-        "A favorable day ahead. New opportunities may arise in your career. Focus on your goals.",
-      lucky: { color: "Red", number: "9", direction: "North" },
-    },
-    {
-      sign: "Taurus",
-      prediction:
-        "Family life will be peaceful and harmonious. Good time for financial planning.",
-      lucky: { color: "Green", number: "6", direction: "South-East" },
-    },
-  ];
   return (
     <div
       className={`min-h-screen font-sans ${
@@ -342,7 +319,7 @@ const Jyotish = () => {
             Daily Horoscope
           </h2>
           <div className="space-y-4">
-            {dailyHoroscope.map((horoscope, index) => (
+            {dailyHoroscope?.data?.map((horoscope: any, index: number) => (
               <div
                 key={index}
                 className={`rounded-lg p-4 shadow-lg ${
@@ -358,7 +335,7 @@ const Jyotish = () => {
                         : "text-dark-text-primary"
                     }`}
                   >
-                    {horoscope.sign}
+                    {horoscope.name}
                   </h3>
                 </div>
                 <p
@@ -368,7 +345,7 @@ const Jyotish = () => {
                       : "text-dark-text-secondary"
                   }`}
                 >
-                  {horoscope.prediction}
+                  {horoscope.description}
                 </p>
                 <div
                   className={`grid grid-cols-3 gap-2 text-xs pt-3 ${
@@ -394,7 +371,7 @@ const Jyotish = () => {
                           : "text-dark-text-primary"
                       }`}
                     >
-                      {horoscope.lucky.color}
+                      {horoscope.color}
                     </p>
                   </div>
                   <div className="text-center">
@@ -414,7 +391,7 @@ const Jyotish = () => {
                           : "text-dark-text-primary"
                       }`}
                     >
-                      {horoscope.lucky.number}
+                      {horoscope.number}
                     </p>
                   </div>
                   <div className="text-center">
@@ -434,7 +411,7 @@ const Jyotish = () => {
                           : "text-dark-text-primary"
                       }`}
                     >
-                      {horoscope.lucky.direction}
+                      {horoscope.direction}
                     </p>
                   </div>
                 </div>
@@ -465,10 +442,9 @@ const Jyotish = () => {
         )}
       </div>
 
-      {
-        isAiReadingModalOpen &&
+      {isAiReadingModalOpen && (
         <AIReading setIsAiReadingModalOpen={setIsAiReadingModalOpe} />
-      }
+      )}
     </div>
   );
 };

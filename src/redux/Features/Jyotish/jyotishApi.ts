@@ -2,7 +2,24 @@ import { baseApi } from "../../API/baseApi";
 
 const jyotishApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-   generateKundli: builder.mutation({
+    getAllDailyHoroscopes: builder.query({
+      query: (params) => {
+        let queryStr = "";
+        if (params) {
+          const queryParams = new URLSearchParams();
+          if (params.keyword) queryParams.append("keyword", params.keyword);
+          queryStr = `?${queryParams.toString()}`;
+        }
+        return {
+          url: `/dailyHoroscope${queryStr}`,
+          method: "GET",
+          credentials: "include",
+        };
+      },
+      providesTags: ["jyotish"],
+    }),
+
+    generateKundli: builder.mutation({
       query: (data) => ({
         url: `/ai/generate-kundli`,
         method: "POST",
@@ -23,7 +40,5 @@ const jyotishApi = baseApi.injectEndpoints({
   }),
 });
 
-export const {
-  useGenerateKundliMutation,
-  useGenerateMuhurtaMutation
-} = jyotishApi;
+export const { useGetAllDailyHoroscopesQuery, useGenerateKundliMutation, useGenerateMuhurtaMutation } =
+  jyotishApi;

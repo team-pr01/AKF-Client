@@ -16,7 +16,6 @@ type TFormData = {
 const GenerateKundaliForm = () => {
   const [generateKundli, { isLoading }] = useGenerateKundliMutation();
   const [kundaliResponse, setKundaliResponse] = useState<any>(null);
-  console.log(kundaliResponse);
   const {
     register,
     handleSubmit,
