@@ -3,13 +3,7 @@ import React, { useState } from "react";
 import PageHeader from "../../components/Reusable/PageHeader/PageHeader";
 import { useTheme } from "../../contexts/ThemeContext";
 import {
-  BathIcon,
-  BedIcon,
-  DoorOpenIcon,
-  KitchenIcon,
-  Plant2Icon,
   SearchLucideIcon,
-  TempleIcon,
 } from "../../constants";
 import { useGetAllVastuQuery } from "../../redux/Features/Vastu/vastuApi";
 import { getEmbedUrl } from "../../utils/getEmbedUrl";
@@ -17,6 +11,9 @@ import Loader from "../../components/Shared/Loader/Loader";
 import Experts from "../../components/Reusable/Experts/Experts";
 import { useGetAllConsultancyServicesQuery } from "../../redux/Features/ConsultancyService/consultancyServiceApi";
 import { useGetAllVastuTipsQuery } from "../../redux/Features/Vastu/vastuTipsApi";
+import { useGetAllCategoriesQuery } from "../../redux/Features/Categories/ReelCategory/categoriesApi";
+import { BrainIcon } from "lucide-react";
+import VastuModal from "../../components/VastuPage/VastuModal/VastuModal";
 
 export type TVastu = {
   _id: string;
@@ -31,6 +28,7 @@ const Vastu = () => {
   const { theme } = useTheme();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+   const [showAIModal, setShowAIModal] = useState(false);
   const {
     data: vastu,
     isLoading: isVastuLoading,
@@ -47,15 +45,14 @@ const Vastu = () => {
   const { data: vastuTips, isLoading: isVastuTipsLoading } =
     useGetAllVastuTipsQuery({});
 
-  const vastuCategories = [
-    { id: "", name: "All", icon: <DoorOpenIcon /> },
-    { id: "entrance", name: "Entrance", icon: <DoorOpenIcon /> },
-    { id: "bedroom", name: "Bedroom", icon: <BedIcon /> },
-    { id: "kitchen", name: "Kitchen", icon: <KitchenIcon /> },
-    { id: "bathroom", name: "Bathroom", icon: <BathIcon /> },
-    { id: "temple", name: "Temple", icon: <TempleIcon /> },
-    { id: "garden", name: "Garden", icon: <Plant2Icon /> },
-  ];
+ const { data: categoryData } = useGetAllCategoriesQuery({});
+  const filteredCategory = categoryData?.data?.filter(
+    (category: any) => category.areaName === "vastu"
+  );
+
+  const allCategories = filteredCategory?.map(
+    (category: any) => category.category
+  );
 
   return (
     <div
@@ -89,16 +86,23 @@ const Vastu = () => {
                   : "bg-dark-surface-alt text-dark-text-primary placeholder-dark-text-tertiary"
               }`}
             />
+             <button
+                        onClick={() => setShowAIModal(true)}
+                        className="bg-gradient-to-r from-brand-blue to-teal-500 hover:from-teal-500 hover:to-brand-blue bg-200% animate-background-pan-fast px-4 py-3 sm:py-0 rounded-lg flex items-center justify-center gap-2 transition-all duration-300 text-white font-medium shadow-md hover:shadow-lg hover:shadow-brand-blue/40"
+                      >
+                        <BrainIcon className="w-5 h-5" />
+                        <span>AI Recipe</span>
+                      </button>
           </div>
         </div>
         {/* Categories */}
         <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4">
-          {vastuCategories?.map((category) => (
+          {allCategories?.map((category: any) => (
             <button
-              key={category.id}
-              onClick={() => setSelectedCategory(category.id)}
-              className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full whitespace-nowrap text-xs sm:text-sm transition-all duration-200 ease-in-out shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-opacity-50 flex items-center ${
-                selectedCategory === category.id
+              key={category}
+              onClick={() => setSelectedCategory(category)}
+              className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full whitespace-nowrap text-xs sm:text-sm transition-all duration-200 ease-in-out shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-opacity-50 ${
+                selectedCategory === category
                   ? "bg-brand-orange text-white font-semibold"
                   : `${
                       theme === "light"
@@ -107,16 +111,7 @@ const Vastu = () => {
                     }`
               }`}
             >
-              {React.cloneElement(category.icon, {
-                className: `w-4 h-4 mr-1.5 ${
-                  selectedCategory === category.id
-                    ? "text-white"
-                    : theme === "light"
-                    ? "text-light-text-secondary"
-                    : "text-dark-text-secondary"
-                }`,
-              })}
-              {category.name}
+              {category}
             </button>
           ))}
         </div>
@@ -306,6 +301,7 @@ const Vastu = () => {
           />
         )}
       </div>
+      {showAIModal && <VastuModal setShowAIModal={setShowAIModal} />}
     </div>
   );
 };

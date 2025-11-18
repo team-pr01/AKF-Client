@@ -23,7 +23,15 @@ const vastuApi = baseApi.injectEndpoints({
       }),
       providesTags: ["vastu"],
     }),
-
+     generateVastu: builder.mutation({
+      query: (data) => ({
+        url: `/ai/generate-vastu`,
+        method: 'POST',
+        body: data,
+        credentials: 'include',
+      }),
+      invalidatesTags: ['vastu'],
+    }),
     
   }),
 });
@@ -31,4 +39,5 @@ const vastuApi = baseApi.injectEndpoints({
 export const {
   useGetAllVastuQuery,
   useGetSingleVastuQuery,
+  useGenerateVastuMutation
 } = vastuApi;
