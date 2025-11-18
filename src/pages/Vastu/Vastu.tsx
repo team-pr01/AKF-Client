@@ -63,37 +63,43 @@ const Vastu = () => {
       }`}
     >
       <PageHeader title={"Vastu Shastra"} />
-
+ <div className="p-4 pb-[90px] flex flex-col gap-5">
       <div
-        className={`p-4 space-y-4 sticky top-[60px] z-30 ${
-          theme === "light"
-            ? "bg-light-primary dark:bg-dark-primary"
-            : "bg-primary dark:bg-black"
-        }`}
+        className={`p-4 flex flex-col sm:flex-row gap-2 sticky top-[60px] z-30 ${
+            theme === "light"
+              ? "bg-light-primary dark:bg-dark-primary shadow-sm"
+              : "bg-primary dark:bg-black shadow-md"
+          }`}
       >
-        <div className="flex gap-2">
-          {/* Search bar */}
+        <div
+          className={`p-4 flex flex-col sm:flex-row gap-2 sticky top-[60px] z-30 ${
+            theme === "light"
+              ? "bg-light-primary dark:bg-dark-primary shadow-sm"
+              : "bg-primary dark:bg-black shadow-md"
+          }`}
+        >
           <div className="flex-1 relative">
             <SearchLucideIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-brand-orange" />
             <input
               type="text"
-              placeholder={"Search Vastu tips, experts..."}
+              placeholder="Search recipes..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className={`w-full pl-10 pr-12 py-3 rounded-lg outline-none focus:ring-2 focus:ring-brand-orange ${
+              className={`w-full pl-10 pr-12 py-3 rounded-lg outline-none focus:ring-2 focus:ring-brand-orange transition-shadow focus:shadow-lg ${
                 theme === "light"
                   ? "bg-light-surface text-light-text-primary placeholder-light-text-tertiary"
                   : "bg-dark-surface-alt text-dark-text-primary placeholder-dark-text-tertiary"
               }`}
+              aria-label="Search recipes"
             />
-             <button
-                        onClick={() => setShowAIModal(true)}
-                        className="bg-gradient-to-r from-brand-blue to-teal-500 hover:from-teal-500 hover:to-brand-blue bg-200% animate-background-pan-fast px-4 py-3 sm:py-0 rounded-lg flex items-center justify-center gap-2 transition-all duration-300 text-white font-medium shadow-md hover:shadow-lg hover:shadow-brand-blue/40"
-                      >
-                        <BrainIcon className="w-5 h-5" />
-                        <span>AI Recipe</span>
-                      </button>
           </div>
+          <button
+            onClick={() => setShowAIModal(true)}
+            className="bg-gradient-to-r from-brand-blue to-teal-500 hover:from-teal-500 hover:to-brand-blue bg-200% animate-background-pan-fast px-4 py-3 sm:py-0 rounded-lg flex items-center justify-center gap-2 transition-all duration-300 text-white font-medium shadow-md hover:shadow-lg hover:shadow-brand-blue/40"
+          >
+            <BrainIcon className="w-5 h-5" />
+            <span>AI Recipe</span>
+          </button>
         </div>
         {/* Categories */}
         <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4">
@@ -116,7 +122,7 @@ const Vastu = () => {
           ))}
         </div>
       </div>
-
+</div>
       <main className="p-4 pt-0 space-y-6">
         {/* Videos */}
         <section>
