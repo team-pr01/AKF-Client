@@ -12,11 +12,14 @@ import PageHeader from "../../components/Reusable/PageHeader/PageHeader";
 import { useDispatch, useSelector } from "react-redux";
 import { logout, useCurrentUser } from "../../redux/Features/Auth/authSlice";
 import { Link, useNavigate } from "react-router-dom";
-import { User } from "lucide-react";
+import { BadgeCheck, User } from "lucide-react";
 import { CgEnter } from "react-icons/cg";
+import { useGetMeQuery } from "../../redux/Features/Auth/authApi";
 
 const MyProfile = () => {
   const user = useSelector(useCurrentUser) as any;
+  const {data:myProfile} = useGetMeQuery({});
+  console.log(myProfile);
   const { theme } = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -149,9 +152,14 @@ const MyProfile = () => {
               value={userProfile.stats?.mantrasSaved || 0}
             /> */}
               <StatItem
-                icon={<AwardIcon />}
+                icon={<BadgeCheck />}
                 label="Quizzes Taken"
-                value={user.totalQuizTaken || 0}
+                value={myProfile?.data?.totalQuizTaken || 0}
+              />
+              <StatItem
+                icon={<AwardIcon />}
+                label="Subscribed Plan"
+                value={myProfile?.data?.subscribedPlanName || "No Plan Taken"}
               />
               {/* <StatItem
               icon={<ArticleIcon />}
@@ -217,7 +225,7 @@ const MyProfile = () => {
                         : "text-dark-text-primary"
                     }`}
                   >
-                    App Settings
+                    Settings
                   </span>
                 </Link>
                 <ChevronRightIcon

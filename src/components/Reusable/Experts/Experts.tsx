@@ -7,7 +7,6 @@ import {
   Mic,
   Search,
   StopCircle,
-  AlertTriangle,
 } from "lucide-react";
 import Loader from "../../Shared/Loader/Loader";
 import { useTheme } from "../../../contexts/ThemeContext";

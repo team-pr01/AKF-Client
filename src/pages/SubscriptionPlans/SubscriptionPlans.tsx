@@ -291,7 +291,7 @@ const SubscriptionPlans: React.FC = () => {
       {isModalOpen && (
         <MakePaymentModal
           amount={selectedPlanPrice}
-          isInputFieldDisable={false}
+          isInputFieldDisable={true}
           setIsModalOpen={setIsModalOpen}
           programData={{ title: selectedPlanName, amount: selectedPlanPrice }}
           paymentReason="subscription"
